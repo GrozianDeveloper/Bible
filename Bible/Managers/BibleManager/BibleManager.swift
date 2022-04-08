@@ -18,6 +18,7 @@ final class BibleManager {
         let path = Bundle.main.path(forResource: language, ofType: "lproj")
         localizationBundle = Bundle(path: path!)
     }
+    
 
     static let shared = BibleManager()
     private init() {
