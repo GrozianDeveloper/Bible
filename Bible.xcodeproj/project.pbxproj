@@ -24,9 +24,6 @@
 		435B47F427CBF6A200A84C63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 435B47F227CBF6A200A84C63 /* Main.storyboard */; };
 		435B47F627CBF6A300A84C63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 435B47F527CBF6A300A84C63 /* Assets.xcassets */; };
 		435B47F927CBF6A300A84C63 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 435B47F727CBF6A300A84C63 /* LaunchScreen.storyboard */; };
-		435B480427CBF6A300A84C63 /* BibleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435B480327CBF6A300A84C63 /* BibleTests.swift */; };
-		435B480E27CBF6A300A84C63 /* BibleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435B480D27CBF6A300A84C63 /* BibleUITests.swift */; };
-		435B481027CBF6A300A84C63 /* BibleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435B480F27CBF6A300A84C63 /* BibleUITestsLaunchTests.swift */; };
 		435B481F27CBF7C700A84C63 /* BibleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435B481E27CBF7C700A84C63 /* BibleViewController.swift */; };
 		435B482127CBF8BE00A84C63 /* BibleModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435B482027CBF8BE00A84C63 /* BibleModels.swift */; };
 		435B483727CBF8CE00A84C63 /* en_kjv.json in Resources */ = {isa = PBXBuildFile; fileRef = 435B482327CBF8CD00A84C63 /* en_kjv.json */; };
@@ -71,23 +68,6 @@
 		43F8918827CE86D4009611DD /* BibleVersionDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F8918627CE86D4009611DD /* BibleVersionDetailsViewController.xib */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		435B480027CBF6A300A84C63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 435B47E127CBF6A200A84C63 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 435B47E827CBF6A200A84C63;
-			remoteInfo = Bible;
-		};
-		435B480A27CBF6A300A84C63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 435B47E127CBF6A200A84C63 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 435B47E827CBF6A200A84C63;
-			remoteInfo = Bible;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		430D4E1727D0CCA30005A899 /* BookmarkTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkTableViewCell.swift; sourceTree = "<group>"; };
 		430D4E1827D0CCA30005A899 /* BookmarkTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarkTableViewCell.xib; sourceTree = "<group>"; };
@@ -108,11 +88,6 @@
 		435B47F527CBF6A300A84C63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		435B47F827CBF6A300A84C63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		435B47FA27CBF6A300A84C63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		435B47FF27CBF6A300A84C63 /* BibleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BibleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		435B480327CBF6A300A84C63 /* BibleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BibleTests.swift; sourceTree = "<group>"; };
-		435B480927CBF6A300A84C63 /* BibleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BibleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		435B480D27CBF6A300A84C63 /* BibleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BibleUITests.swift; sourceTree = "<group>"; };
-		435B480F27CBF6A300A84C63 /* BibleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BibleUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		435B481E27CBF7C700A84C63 /* BibleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BibleViewController.swift; sourceTree = "<group>"; };
 		435B482027CBF8BE00A84C63 /* BibleModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BibleModels.swift; sourceTree = "<group>"; };
 		435B482327CBF8CD00A84C63 /* en_kjv.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = en_kjv.json; sourceTree = "<group>"; };
@@ -162,20 +137,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		435B47E627CBF6A200A84C63 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		435B47FC27CBF6A300A84C63 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		435B480627CBF6A300A84C63 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -256,8 +217,6 @@
 			isa = PBXGroup;
 			children = (
 				435B47EB27CBF6A200A84C63 /* Bible */,
-				435B480227CBF6A300A84C63 /* BibleTests */,
-				435B480C27CBF6A300A84C63 /* BibleUITests */,
 				435B47EA27CBF6A200A84C63 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -266,8 +225,6 @@
 			isa = PBXGroup;
 			children = (
 				435B47E927CBF6A200A84C63 /* Bible.app */,
-				435B47FF27CBF6A300A84C63 /* BibleTests.xctest */,
-				435B480927CBF6A300A84C63 /* BibleUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -281,23 +238,6 @@
 				435B481C27CBF6B100A84C63 /* Support */,
 			);
 			path = Bible;
-			sourceTree = "<group>";
-		};
-		435B480227CBF6A300A84C63 /* BibleTests */ = {
-			isa = PBXGroup;
-			children = (
-				435B480327CBF6A300A84C63 /* BibleTests.swift */,
-			);
-			path = BibleTests;
-			sourceTree = "<group>";
-		};
-		435B480C27CBF6A300A84C63 /* BibleUITests */ = {
-			isa = PBXGroup;
-			children = (
-				435B480D27CBF6A300A84C63 /* BibleUITests.swift */,
-				435B480F27CBF6A300A84C63 /* BibleUITestsLaunchTests.swift */,
-			);
-			path = BibleUITests;
 			sourceTree = "<group>";
 		};
 		435B481C27CBF6B100A84C63 /* Support */ = {
@@ -541,42 +481,6 @@
 			productReference = 435B47E927CBF6A200A84C63 /* Bible.app */;
 			productType = "com.apple.product-type.application";
 		};
-		435B47FE27CBF6A300A84C63 /* BibleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 435B481627CBF6A300A84C63 /* Build configuration list for PBXNativeTarget "BibleTests" */;
-			buildPhases = (
-				435B47FB27CBF6A300A84C63 /* Sources */,
-				435B47FC27CBF6A300A84C63 /* Frameworks */,
-				435B47FD27CBF6A300A84C63 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				435B480127CBF6A300A84C63 /* PBXTargetDependency */,
-			);
-			name = BibleTests;
-			productName = BibleTests;
-			productReference = 435B47FF27CBF6A300A84C63 /* BibleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		435B480827CBF6A300A84C63 /* BibleUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 435B481927CBF6A300A84C63 /* Build configuration list for PBXNativeTarget "BibleUITests" */;
-			buildPhases = (
-				435B480527CBF6A300A84C63 /* Sources */,
-				435B480627CBF6A300A84C63 /* Frameworks */,
-				435B480727CBF6A300A84C63 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				435B480B27CBF6A300A84C63 /* PBXTargetDependency */,
-			);
-			name = BibleUITests;
-			productName = BibleUITests;
-			productReference = 435B480927CBF6A300A84C63 /* BibleUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -589,14 +493,6 @@
 				TargetAttributes = {
 					435B47E827CBF6A200A84C63 = {
 						CreatedOnToolsVersion = 13.2.1;
-					};
-					435B47FE27CBF6A300A84C63 = {
-						CreatedOnToolsVersion = 13.2.1;
-						TestTargetID = 435B47E827CBF6A200A84C63;
-					};
-					435B480827CBF6A300A84C63 = {
-						CreatedOnToolsVersion = 13.2.1;
-						TestTargetID = 435B47E827CBF6A200A84C63;
 					};
 				};
 			};
@@ -615,8 +511,6 @@
 			projectRoot = "";
 			targets = (
 				435B47E827CBF6A200A84C63 /* Bible */,
-				435B47FE27CBF6A300A84C63 /* BibleTests */,
-				435B480827CBF6A300A84C63 /* BibleUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -639,20 +533,6 @@
 				435B47F427CBF6A200A84C63 /* Main.storyboard in Resources */,
 				43C37AD527D7859D0046ED43 /* Bible.strings in Resources */,
 				43C37AD827D7A8D80046ED43 /* UILocolization.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		435B47FD27CBF6A300A84C63 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		435B480727CBF6A300A84C63 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -712,37 +592,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		435B47FB27CBF6A300A84C63 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				435B480427CBF6A300A84C63 /* BibleTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		435B480527CBF6A300A84C63 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				435B480E27CBF6A300A84C63 /* BibleUITests.swift in Sources */,
-				435B481027CBF6A300A84C63 /* BibleUITestsLaunchTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		435B480127CBF6A300A84C63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 435B47E827CBF6A200A84C63 /* Bible */;
-			targetProxy = 435B480027CBF6A300A84C63 /* PBXContainerItemProxy */;
-		};
-		435B480B27CBF6A300A84C63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 435B47E827CBF6A200A84C63 /* Bible */;
-			targetProxy = 435B480A27CBF6A300A84C63 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		435B47F227CBF6A200A84C63 /* Main.storyboard */ = {
@@ -959,82 +809,6 @@
 			};
 			name = Release;
 		};
-		435B481727CBF6A300A84C63 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SCS73B2ZBL;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.grozian.BibleTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bible.app/Bible";
-			};
-			name = Debug;
-		};
-		435B481827CBF6A300A84C63 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SCS73B2ZBL;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.grozian.BibleTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bible.app/Bible";
-			};
-			name = Release;
-		};
-		435B481A27CBF6A300A84C63 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SCS73B2ZBL;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.grozian.BibleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Bible;
-			};
-			name = Debug;
-		};
-		435B481B27CBF6A300A84C63 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SCS73B2ZBL;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.grozian.BibleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Bible;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1052,24 +826,6 @@
 			buildConfigurations = (
 				435B481427CBF6A300A84C63 /* Debug */,
 				435B481527CBF6A300A84C63 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		435B481627CBF6A300A84C63 /* Build configuration list for PBXNativeTarget "BibleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				435B481727CBF6A300A84C63 /* Debug */,
-				435B481827CBF6A300A84C63 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		435B481927CBF6A300A84C63 /* Build configuration list for PBXNativeTarget "BibleUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				435B481A27CBF6A300A84C63 /* Debug */,
-				435B481B27CBF6A300A84C63 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
