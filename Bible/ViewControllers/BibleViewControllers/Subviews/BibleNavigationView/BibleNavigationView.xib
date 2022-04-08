@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BibleNavigationView" customModule="Bible" customModuleProvider="target">
+            <connections>
+                <outlet property="bookButton" destination="x63-Ek-IGC" id="isc-nF-N0v"/>
+                <outlet property="chapterButton" destination="JIc-Uz-voy" id="tJN-io-RmQ"/>
+                <outlet property="contentView" destination="iN0-l3-epB" id="Eul-ym-E3b"/>
+                <outlet property="stackView" destination="xMj-2W-LA0" id="eIc-CR-zdB"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="353" height="215"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="xMj-2W-LA0">
+                    <rect key="frame" x="100.5" y="92" width="152" height="31"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x63-Ek-IGC">
+                            <rect key="frame" x="0.0" y="0.0" width="76" height="31"/>
+                            <rect key="contentStretch" x="0.0" y="0.0" width="1" height="0.90000000000000002"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Genesis"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Genesis"/>
+                            <connections>
+                                <action selector="bookButtonDidTap:" destination="-1" eventType="touchUpInside" id="8nq-gj-XfE"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JIc-Uz-voy">
+                            <rect key="frame" x="76" y="0.0" width="76" height="31"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="1"/>
+                            <buttonConfiguration key="configuration" style="plain" title="1"/>
+                            <connections>
+                                <action selector="chapterDidTap:" destination="-1" eventType="touchUpInside" id="qPX-Xp-XQj"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="xMj-2W-LA0" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="Pjl-A4-VOB"/>
+                <constraint firstItem="xMj-2W-LA0" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="YZT-XV-8cP"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="124" y="-119"/>
+        </view>
+    </objects>
+</document>

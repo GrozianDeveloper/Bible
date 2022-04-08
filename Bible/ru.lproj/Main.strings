@@ -1,0 +1,33 @@
+
+/* Class = "UINavigationItem"; title = "More"; ObjectID = "64Z-aT-xOn"; */
+"64Z-aT-xOn.title" = "Ещё";
+
+/* Class = "UILabel"; text = "Maps"; ObjectID = "6vd-9V-wCa"; */
+"6vd-9V-wCa.text" = "Карты";
+
+/* Class = "UINavigationItem"; title = "Plan"; ObjectID = "966-hA-cof"; */
+"966-hA-cof.title" = "План";
+
+/* Class = "UINavigationItem"; title = "Settings"; ObjectID = "FWd-NT-mqa"; */
+"FWd-NT-mqa.title" = "Настройки";
+
+/* Class = "UINavigationItem"; title = "Maps"; ObjectID = "UQM-ID-s6E"; */
+"UQM-ID-s6E.title" = "Карты";
+
+/* Class = "UILabel"; text = "History"; ObjectID = "gcw-Td-TIe"; */
+"gcw-Td-TIe.text" = "История";
+
+/* Class = "UINavigationItem"; title = "History"; ObjectID = "kWY-sc-5Hs"; */
+"kWY-sc-5Hs.title" = "История";
+
+/* Class = "UITabBarItem"; title = "Bible"; ObjectID = "qxz-X9-dB9"; */
+"qxz-X9-dB9.title" = "Библия";
+
+/* Class = "UILabel"; text = "Settings"; ObjectID = "rlv-bt-etE"; */
+"rlv-bt-etE.text" = "Настройки";
+
+/* Class = "UINavigationItem"; title = "Bookmark"; ObjectID = "rzb-oQ-1VQ"; */
+"rzb-oQ-1VQ.title" = "Заметки";
+
+/* Class = "UILabel"; text = "Plan"; ObjectID = "tM2-57-1gH"; */
+"tM2-57-1gH.text" = "План";

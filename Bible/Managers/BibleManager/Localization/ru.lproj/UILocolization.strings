@@ -1,0 +1,29 @@
+/* 
+  UILocolization.strings
+  Bible
+
+  Created by Bogdan Grozian on 08.03.2022.
+  
+*/
+
+"Chapter" = "Глава";
+"Bible" = "Библия";
+"Create bookmark" = "Создать заметку";
+"Bookmarks" = "Заметки";
+// Ещё
+"More" = "Ещё";
+"History" = "История";
+// План
+"Plan" = "План";
+"Maps" = "Карты";
+"Settings" = "Настройки";
+// Отмена
+"Cancel" = "Отмена";
+// Перейти
+"Go" = "Перейти";
+"Copy" = "Копиравоть";
+"Bible Versions" = "Версии Библии";
+"Fonts" = "Шрифты";
+"Setted" = "Установлено";
+"Book" = "Книга";
+"Verse" = "Стих";

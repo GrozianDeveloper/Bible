@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="BibleBookmark" representedClassName="BibleBookmark" syncable="YES">
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="verses" optional="YES" attributeType="Transformable" valueTransformerName="BibleVersesTransformer" customClassName="BibleVerses"/>
+    </entity>
+    <entity name="BibleVerse" representedClassName="BibleVerse" syncable="YES" codeGenerationType="class">
+        <attribute name="abbrev" optional="YES" attributeType="String"/>
+        <attribute name="chapterOffset" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="row" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <elements>
+        <element name="BibleBookmark" positionX="-63" positionY="-18" width="128" height="74"/>
+        <element name="BibleVerse" positionX="-63" positionY="18" width="128" height="74"/>
+    </elements>
+</model>
