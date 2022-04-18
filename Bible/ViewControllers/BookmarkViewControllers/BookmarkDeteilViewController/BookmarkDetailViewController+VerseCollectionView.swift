@@ -12,7 +12,7 @@ extension BookmarkDetailViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let verse = totalVerses[indexPath.row]
         let bibleManager = BibleManager.shared
-        bibleManager.openViewController(self, target: .bible(abbrev: verse.abbrev, chapter: verse.chapterOffset, row: verse.row))
+        bibleManager.openViewController(self, target: .bibleWithAbbrev(abbrev: verse.abbrev, chapter: verse.chapterOffset, rows: [verse.row]))
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
@@ -30,11 +30,6 @@ extension BookmarkDetailViewController: UICollectionViewDelegateFlowLayout {
             return menu
         })
     }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let text = textForCollectionView[indexPath.row].string
-        return CGSize(width: text.width(withConstrainedHeight: 30, font: .systemFont(ofSize: 18)), height: 30)
-    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -49,13 +44,5 @@ extension BookmarkDetailViewController: UICollectionViewDataSource {
         }
         cell.label.attributedText = textForCollectionView[indexPath.row]
         return cell
-    }
-}
-
-fileprivate extension String {
-    func width(withConstrainedHeight height: CGFloat, font: UIFont) -> CGFloat {
-        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
-        return ceil(boundingBox.width)
     }
 }

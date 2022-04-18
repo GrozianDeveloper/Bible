@@ -107,26 +107,28 @@ extension BookmarkDetailViewController {
     private func setupTextPresent() {
         let text = bookmark.note ?? "Text"
         textView.text = text
-        versesPresenterView.delegate = self
-        versesPresenterView.dataSource = self
-        view.addSubview(versesPresenterView)
-        textView.autocorrectionType = .no
-        view.addSubview(textView)
         updateTextViewFont()
-        versesPresenterView.translatesAutoresizingMaskIntoConstraints = false
+        textView.autocorrectionType = .no
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.delegate = self
+        view.addSubview(textView)
+        versesPresenterView.translatesAutoresizingMaskIntoConstraints = false
+        versesPresenterView.backgroundColor = .systemGroupedBackground
+        versesPresenterView.layer.cornerRadius = 15
+        view.addSubview(versesPresenterView)
         NSLayoutConstraint.activate([
             versesPresenterView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            versesPresenterView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            versesPresenterView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            versesPresenterView.heightAnchor.constraint(equalToConstant: 35),
+            versesPresenterView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15),
+            versesPresenterView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
+            versesPresenterView.heightAnchor.constraint(equalToConstant: 50),
 
             textView.topAnchor.constraint(equalTo: versesPresenterView.safeAreaLayoutGuide.bottomAnchor),
-            textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 2),
+            textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 2),
             textView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+        textView.delegate = self
+        versesPresenterView.delegate = self
+        versesPresenterView.dataSource = self
     }
 }
 

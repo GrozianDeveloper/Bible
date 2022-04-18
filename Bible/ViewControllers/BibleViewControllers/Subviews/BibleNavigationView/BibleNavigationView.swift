@@ -17,26 +17,19 @@ final class BibleNavigationView: UIView {
 
     var bookButtonDidTapCallBack: (() -> ())?
     var chapterButtonDidTapCallBack: (() -> ())?
-    private var middleLineLayer: CALayer!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupBookButton()
+        setupView()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupBookButton()
+        setupView()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        stackView.layer.cornerRadius = 5
-        stackView.layer.borderWidth = middleLineLayer.borderWidth
-        stackView.layer.borderColor = middleLineLayer.borderColor
-        
-        middleLineLayer.frame.size.height = stackView.layer.frame.height
-        middleLineLayer.frame.origin.x = stackView.layer.bounds.midX
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        stackView.layer.borderColor = UIColor.secondaryLabel.cgColor
     }
 }
 
@@ -52,16 +45,17 @@ extension BibleNavigationView {
 
 // MARK: Setup
 private extension BibleNavigationView {
-    private func setupBookButton() {
+    private func setupView() {
         Bundle.main.loadNibNamed("BibleNavigationView", owner: self, options: nil)
         addSubview(contentView)
         contentView.frame = bounds
         clipsToBounds = true
-        
-        middleLineLayer = CALayer()
-        middleLineLayer.borderWidth = 1
-        middleLineLayer.frame.size.width = 1
-        middleLineLayer.borderColor = UIColor.secondarySystemBackground.cgColor
-        stackView.layer.addSublayer(middleLineLayer)
+
+        let color = UIColor.secondaryLabel
+        stackView.layer.cornerRadius = 5
+        stackView.layer.borderWidth = 1
+        stackView.layer.borderColor = color.cgColor
+        bookButton.setTitleColor(color, for: .normal)
+        chapterButton.setTitleColor(color, for: .normal)
     }
 }

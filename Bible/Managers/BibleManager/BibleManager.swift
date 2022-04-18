@@ -10,7 +10,37 @@ import CoreData
 import simd
 import AVFoundation
 
-final class BibleManager {
+final class BibleManager: NSObject {
+    
+    class func registerDefaults() {
+        var defaults: [String: Any] = [
+            UserDefaultsKeys.fontPointSize: 17
+        ]
+        SwitchableSettings.allCases.forEach {
+            if let key = $0.userDefaultKey {
+                defaults[key] = true
+            }
+        }
+        UserDefaults.standard.register(defaults: defaults)
+    }
+    
+    var colorizeReferencedverses = UserDefaults.standard.bool(forKey: SwitchableSettings.colorizeVerses.userDefaultKey!)
+    enum SwitchableSettings: CaseIterable {
+        case colorizeVerses
+        var title: String {
+            switch self {
+            case .colorizeVerses:
+                return "Сolorize active book verses with reference to it"
+            }
+        }
+        var userDefaultKey: String? {
+            switch self {
+            case .colorizeVerses:
+                return "ColorizeActiveBookVerses"
+            }
+        }
+    }
+
     private(set) var localizationBundle: Bundle!
     
     private func setupLocalizationBundle() {
@@ -21,11 +51,15 @@ final class BibleManager {
     
 
     static let shared = BibleManager()
-    private init() {
-        let language = UserDefaults.standard.string(forKey: UserDefaultsKey.language) ?? "en"
+    private override init() {
+        let language = UserDefaults.standard.string(forKey: UserDefaultsKeys.language) ?? "en"
         bibleVersion = BibleVersion(rawValue: language) ?? .kingJamesVersion
+        super.init()
+        if let key = BibleManager.SwitchableSettings.colorizeVerses.userDefaultKey {
+            UserDefaults.standard.addObserver(self, forKeyPath: key, options: [.new], context: nil)
+        }
         setupLocalizationBundle()
-        getBible()
+        getCurrentBible()
         NotificationCenter.default.addObserver(self, selector: #selector(saveContext), name: UIApplication.willResignActiveNotification, object: nil)
     }
 
@@ -46,15 +80,15 @@ final class BibleManager {
 
     private(set) var bibleVersion: BibleVersion {
         didSet {
-            UserDefaults.standard.set(bibleVersion.rawValue, forKey: UserDefaultsKey.language)
-            getBible()
+            UserDefaults.standard.set(bibleVersion.rawValue, forKey: UserDefaultsKeys.language)
+            getCurrentBible()
         }
     }
     
     func setBibleVersion(_ version: BibleVersion) {
         bibleVersion = version
         setupLocalizationBundle()
-        userDefaults.set(bibleVersion.rawValue, forKey: UserDefaultsKey.language)
+        userDefaults.set(bibleVersion.rawValue, forKey: UserDefaultsKeys.language)
     }
 
     private(set) var bible = [Book]() {
@@ -78,19 +112,15 @@ final class BibleManager {
     
     lazy var chapterOffsetToOpen: Int? = getLastOpenedChapterOffset()
     
-    var verseRowToScroll: Int? = nil
+    var verseRowToScroll: [Int]? = nil
 
     var bookmarkToOpen: ObjectIdentifier? = nil
     
     private(set) var verseReferenceForActiveBookmark: Set<BibleVerse> = []
     
     private(set) lazy var font: UIFont = {
-        let pointSize = userDefaults.float(forKey: UserDefaultsKey.fontPointSize)
-        if pointSize != 0 {
-            return .systemFont(ofSize: CGFloat(pointSize))
-        } else {
-            return .systemFont(ofSize: CGFloat(17))
-        }
+        let pointSize = userDefaults.float(forKey: UserDefaultsKeys.fontPointSize)
+        return .systemFont(ofSize: CGFloat(pointSize))
     }() {
         didSet {
             garanteeMainThread {
@@ -101,6 +131,7 @@ final class BibleManager {
     
     lazy var bookmarks: [Bookmark] = fetchBookrmarks() {
         didSet {
+            print(1)
             garanteeMainThread {
                 postNotification(BibleManager.bookmarksDidChangeNotification)
             }
@@ -111,8 +142,7 @@ final class BibleManager {
 // MARK: - Set Active Book
 extension BibleManager {
     func setActiveBook(book: Book) {
-        guard bible.contains(where: { $0.abbrev == book.abbrev }) else { return }
-        userDefaults.set(book.abbrev, forKey: UserDefaultsKey.activeBookAbbrev)
+        userDefaults.set(book.abbrev, forKey: UserDefaultsKeys.activeBookAbbrev)
         updateBookmarkReferencesToBook(book: book)
         activeBook = book
     }
@@ -127,7 +157,7 @@ extension BibleManager {
 extension BibleManager {
     func setBibleFont(pointSize: CGFloat) {
         font = .systemFont(ofSize: pointSize)
-        userDefaults.set(Float(pointSize), forKey: UserDefaultsKey.fontPointSize)
+        userDefaults.set(Float(pointSize), forKey: UserDefaultsKeys.fontPointSize)
     }
 }
 
@@ -150,22 +180,28 @@ extension BibleManager {
 
 // MARK: - Update
 extension BibleManager {
-    private func getBible() {
+    private func getCurrentBible() {
+        getBible(version: bibleVersion) { [weak self] bible in
+            var indexMatthew: Int = 39
+            bible.enumerated().forEach {
+                if $0.element.abbrev == "mt" {
+                    indexMatthew = $0.offset
+                }
+            }
+            self?.oldTestament = Array(bible.prefix(upTo: indexMatthew))
+            self?.newTestament = Array(bible.suffix(from: indexMatthew))
+            self?.bible = bible
+        }
+    }
+
+    func getBible(version: BibleVersion, complition: @escaping (([Book]) -> ())) {
         decodingQueue.async { [weak self] in
             guard let self = self else { return }
-            let bibleData = self.readLocalFile()
-            bibleData?.decoded(as: [Book].self, completion: { [weak self] result in
+            let bibleData = self.readLocalFile(version)
+            bibleData?.decoded(as: [Book].self, completion: { result in
                 switch result {
                 case .success(let bible):
-                    var indexMatthew: Int = 39
-                    bible.enumerated().forEach {
-                        if $0.element.abbrev == "mt" {
-                            indexMatthew = $0.offset
-                        }
-                    }
-                    self?.oldTestament = Array(bible.prefix(upTo: indexMatthew))
-                    self?.newTestament = Array(bible.suffix(from: indexMatthew))
-                    self?.bible = bible
+                    complition(bible)
                 case .failure(let error):
                     print("decode error: \(error)")
                 }
@@ -174,7 +210,7 @@ extension BibleManager {
     }
     
     private func updateActiveBook() {
-        guard let name = userDefaults.string(forKey: UserDefaultsKey.activeBookAbbrev) else {
+        guard let name = userDefaults.string(forKey: UserDefaultsKeys.activeBookAbbrev) else {
             if let first = bible.first {
                 activeBook = first
             }
@@ -182,8 +218,8 @@ extension BibleManager {
         }
         if let offSet = bible.enumerated().first(where: { $0.element.abbrev == name })?.offset {
             let book = bible[offSet]
-            updateBookmarkReferencesToBook(book: book)
             activeBook = book
+            updateBookmarkReferencesToBook(book: book)
         }
     }
     
@@ -206,8 +242,8 @@ extension BibleManager {
 
 // MARK: - Support
 extension BibleManager {
-    private func readLocalFile() -> Data? {
-        guard let bundlePath = getFilePath() else { return nil }
+    private func readLocalFile(_ version: BibleVersion) -> Data? {
+        guard let bundlePath = getFilePath(version) else { return nil }
         do {
             return try String(contentsOfFile: bundlePath).data(using: .utf8)
         } catch {
@@ -216,9 +252,9 @@ extension BibleManager {
         return nil
     }
 
-    private func getFilePath() -> String? {
+    private func getFilePath(_ version: BibleVersion) -> String? {
         let fileName: String
-        switch bibleVersion {
+        switch version {
         case .kingJamesVersion: fileName = "en_kjv"
         case .Synodal: fileName = "ru_synodal"
         }
@@ -228,7 +264,7 @@ extension BibleManager {
 
 // MARK: - Models
 extension BibleManager {
-    struct UserDefaultsKey {
+    struct UserDefaultsKeys {
         static let activeBookAbbrev = "activeBookAbbrev"
         static let lastOpenedChapter = "lastOpenedChaoter"
         static let fontPointSize = "fontPointSize"

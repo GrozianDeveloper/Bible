@@ -24,13 +24,13 @@ extension BookmarkDetailViewController: UITextViewDelegate {
             // check previous character
             let nsRange = NSRange(location: location - 1, length: 1)
             guard textView.text.hasRange(nsRange), let previousCharacterRange = Range(nsRange) else { return }
-            let previousCharacter = textView.text.substring(with: previousCharacterRange)
-            if previousCharacter == "v" || previousCharacter == "V" {
+            let previousCharacter = textView.text.substring(with: previousCharacterRange).lowercased()
+            if previousCharacter == "v" {
                 textView.text.deleteCharactersInRange(nsRange)
                 commandAtLocation = location
                 executingCommand = isMinus ? .reference : .referenceWith
                 textView.endEditing(true)
-                presentSelector()
+                presentVerseSelector()
             }
         } else if verseSelectorView != nil {
             removeVerseSelector()
@@ -43,7 +43,8 @@ extension BookmarkDetailViewController: UITextViewDelegate {
 }
 
 extension BookmarkDetailViewController: BibleNavigatorDelegate {
-    func didSelectVerse(book: Book, chapterOffset: Int, row: Int) {
+    func didSelect(book: Book, chapterOffset: Int?, verse: Int?) {
+        let row = verse!
         removeVerseSelector()
         if let location = commandAtLocation {
             let range = NSRange(location: location - 2, length: 1)
@@ -58,44 +59,39 @@ extension BookmarkDetailViewController: BibleNavigatorDelegate {
                 }
             }
         }
-        let verse = BibleVerse(abbrev: book.abbrev, chapterOffset: chapterOffset, row: row)
+        let verse = BibleVerse(abbrev: book.abbrev, chapterOffset: chapterOffset!, row: row)
         if book.abbrev == bibleManager.activeBook?.abbrev {
             versesToActiveBook.insert(verse)
         }
-        
-        let referenceText = "\(book.name) \(chapterOffset + 1):\(row + 1)"
-
+        let referenceText = "\(book.name) \(chapterOffset! + 1):\(row + 1)"
         textView.text += referenceText
         addVerseReference(verse)
         if executingCommand == .referenceWith {
-            let verse = book.chapters[chapterOffset][row]
+            let verse = book.chapters[chapterOffset!][row]
             textView.text += "\n" + verse
         }
+    }
+    
+    func doneButtonDidTap() {
+        removeVerseSelector()
     }
 }
 
 // MARK: - VerseSelector
 private extension BookmarkDetailViewController {
-    private func presentSelector() {
-        verseSelectorView = BibleNavigatorViewController(type: .book, options: [
-            .presentVerseSelection: true,
-            .sameFrame: true,
-            .popToSpecificVC: self
-        ])
-        let selectorView = verseSelectorView!.view!
-        textView.addSubview(selectorView)
-        selectorView.frame.size = CGSize(width: 200, height: 300)
-        selectorView.center.x = textView.center.x
-        selectorView.center.y = textView.center.y - selectorView.frame.height / 2
-        addChild(verseSelectorView!)
-        verseSelectorView!.didMove(toParent: self)
+    private func presentVerseSelector() {
+        verseSelectorView = BibleNavigatorViewController(type: .book, options: [.presentVerses, .createDoneLeftBarButton])
         verseSelectorView?.delegate = self
+        verseSelectorView?.isModalInPresentation = true
+        let navigationController = UINavigationController(rootViewController: verseSelectorView!)
+        if let presentationController = navigationController.presentationController as? UISheetPresentationController {
+            presentationController.detents = [.medium()]
+        }
+        self.present(navigationController, animated: true)
     }
     
     private func removeVerseSelector() {
-        verseSelectorView?.willMove(toParent: nil)
-        verseSelectorView?.view.removeFromSuperview()
-        verseSelectorView?.removeFromParent()
+        verseSelectorView?.navigationController?.dismiss(animated: true)
         verseSelectorView = nil
     }
     
@@ -117,13 +113,6 @@ private extension BookmarkDetailViewController {
         }
         self.textForCollectionView = totalVerses.map(createTextForVerse)
         versesPresenterView.reloadData()
-    }
-}
-
-// MARK: - Support
-private extension BookmarkDetailViewController {
-    private func addSpaceIfNeeded(at location: Int) {
-        
     }
 }
 

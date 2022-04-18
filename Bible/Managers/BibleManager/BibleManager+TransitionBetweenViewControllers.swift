@@ -10,8 +10,13 @@ import UIKit
 extension BibleManager {
     func openViewController(_ self: UIViewController?, target: TargerViewController) {
         switch target {
-        case .bible(let abbrev, let chapter, let row):
+        case .bibleWithAbbrev(let abbrev, let chapter, let row):
             setActiveBook(abbrev: abbrev)
+            chapterOffsetToOpen = chapter
+            verseRowToScroll = row
+            self?.tabBarController?.selectedIndex = 0
+        case .bibleWithBook(let book, let chapter, let row):
+            setActiveBook(book: book)
             chapterOffsetToOpen = chapter
             verseRowToScroll = row
             self?.tabBarController?.selectedIndex = 0
@@ -24,7 +29,8 @@ extension BibleManager {
 
 extension BibleManager {
     enum TargerViewController {
-        case bible(abbrev: String, chapter: Int, row: Int?)
+        case bibleWithAbbrev(abbrev: String, chapter: Int, rows: [Int]?)
+        case bibleWithBook(book: Book, chapter: Int, rows: [Int]?)
         case bookmark(id: ObjectIdentifier)
     }
 }

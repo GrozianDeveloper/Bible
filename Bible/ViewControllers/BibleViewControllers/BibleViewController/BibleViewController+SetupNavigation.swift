@@ -30,24 +30,25 @@ extension BibleViewController {
 extension BibleViewController {
     private func bookButtonDidTap() {
         let navigatorVC = BibleNavigatorViewController(type: .book)
-        setupBackBarItem()
+        navigatorVC.delegate = self
         self.navigationController?.pushViewController(navigatorVC, animated: true)
     }
 
     private func chapterButtonDidTap() {
         guard let book = bibleManager.activeBook else { return }
         let navigatorVC = BibleNavigatorViewController(type: .chapter(book: book))
-        setupBackBarItem()
+        navigatorVC.delegate = self
         self.navigationController?.pushViewController(navigatorVC, animated: true)
     }
     
     @objc private func leftBarItemDidTap() {
         if activeChapterOffset > 0 {
             activeChapterOffset -= 1
-            bookViewController.setViewControllers([pages[activeChapterOffset]], direction: .forward, animated: false)
+            bookPageController.setViewControllers([pages[activeChapterOffset]], direction: .forward, animated: false)
         } else if let book = previousBook {
-            let chapterOffset = book.chapters.count - 1
-            bibleManager.openViewController(self, target: .bible(abbrev: book.abbrev, chapter: chapterOffset, row: nil))
+            let chapter = book.chapters.count - 1
+            bibleManager.chapterOffsetToOpen = chapter
+            bibleManager.openViewController(self, target: .bibleWithBook(book: book, chapter: bibleManager.chapterOffsetToOpen!, rows: nil))
             previousBook = nil
         }
     }
@@ -55,16 +56,19 @@ extension BibleViewController {
     @objc private func rightBarItemDidTap() {
         if activeChapterOffset < pages.count - 1 {
             activeChapterOffset += 1
-            bookViewController.setViewControllers([pages[activeChapterOffset]], direction: .forward, animated: false)
+            bookPageController.setViewControllers([pages[activeChapterOffset]], direction: .forward, animated: false)
         } else if let book = nextBook {
-            bibleManager.openViewController(self, target: .bible(abbrev: book.abbrev, chapter: 0, row: nil))
+            bibleManager.chapterOffsetToOpen = 0
+            bibleManager.openViewController(self, target: .bibleWithBook(book: book, chapter: 0, rows: nil))
             nextBook = nil
         }
     }
-    
-    private func setupBackBarItem() {
-        let backItem = UIBarButtonItem()
-        backItem.title = bibleManager.activeBook?.name ?? "Bible".localized()
-        navigationItem.backBarButtonItem = backItem
+}
+
+// MARK: - BibleNavigatorDelegate2
+extension BibleViewController: BibleNavigatorDelegate {
+    func didSelect(book: Book, chapterOffset: Int?, verse: Int?) {
+        bibleManager.chapterOffsetToOpen = chapterOffset
+        bibleManager.setActiveBook(book: book)
     }
 }

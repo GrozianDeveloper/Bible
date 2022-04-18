@@ -57,7 +57,7 @@ extension BookmarkListViewController {
         tableView.reloadData()
     }
     
-    private func checkIsNeededToHideRemoveBarButton() {
+    func checkIsNeededToHideRemoveBarButton() {
         if bookmarks.isEmpty {
             navigationItem.rightBarButtonItem = nil
         } else if navigationItem.rightBarButtonItem == nil {
@@ -67,7 +67,7 @@ extension BookmarkListViewController {
 }
 // MARK: Editing Bookmarks list
 extension BookmarkListViewController {
-    private func handleSelectToRemoveBookmarks() {
+    private func handleSelectToRemoveBookmarks(_ action: UIAction) {
         self.tableView.isEditing = true
         let removeSelected = UIAction { [weak self] _ in
             guard let self = self else { return }
@@ -75,34 +75,31 @@ extension BookmarkListViewController {
                 let offset = self.bookmarks.enumerated().first(where: { $0.element.id == bookmark.id })?.offset
                 if let offset = offset {
                     self.bookmarks.remove(at: offset)
+                    self.tableView.deleteRows(at: [[0, offset]], with: .left)
                     self.bibleManager.deleteBookmark(bookmark: bookmark)
                 }
-                self.tableView.reloadData()
             }
             self.tableView.isEditing = false
             self.setupRemoveAllButton()
+            self.checkIsNeededToHideRemoveBarButton()
         }
-        let trashImage = UIImage(systemName: "trash")?.withRenderingMode(.alwaysTemplate)
-        let barButton = UIBarButtonItem(title: nil, image: trashImage, primaryAction: removeSelected, menu: nil)
-        barButton.tintColor = .red
+        let barButton = UIBarButtonItem(title: "Done", image: nil, primaryAction: removeSelected, menu: nil)
         self.navigationItem.setRightBarButton(barButton, animated: true)
     }
 
-    private func handleRemoveAllBookmarks() {
-        bibleManager.bookmarks.forEach {
-            bibleManager.deleteBookmark(bookmark: $0)
+    private func handleRemoveAllBookmarks(_ action: UIAction) {
+        bibleManager.bookmarks.enumerated().forEach {
+            bibleManager.deleteBookmark(bookmark: $0.element, updateReferencesToActiveBook: false)
         }
-        bookmarks = bibleManager.bookmarks
-        tableView.reloadData()
+        if let book = bibleManager.activeBook {
+            bibleManager.updateBookmarkReferencesToBook(book: book)
+        }
+        checkIsNeededToHideRemoveBarButton()
     }
     
     private func setupRemoveAllButton() {
-        let selectToRemoveBookmark = UIAction { [weak self] _ in
-            self?.handleSelectToRemoveBookmarks()
-        }
-        let removeAll = UIAction(title: "Remove all bookmarks", attributes: [.destructive]) { [weak self] _ in
-            self?.handleRemoveAllBookmarks()
-        }
+        let selectToRemoveBookmark = UIAction(handler: handleSelectToRemoveBookmarks)
+        let removeAll = UIAction(title: "Remove all bookmarks", attributes: [.destructive], handler: handleRemoveAllBookmarks)
         let removeAllMenu = UIMenu(children: [removeAll])
         let barButton = UIBarButtonItem(title: "Edit", image: nil, primaryAction: selectToRemoveBookmark, menu: removeAllMenu)
         navigationItem.setRightBarButton(barButton, animated: true)

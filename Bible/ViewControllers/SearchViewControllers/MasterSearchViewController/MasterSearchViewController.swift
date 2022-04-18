@@ -10,28 +10,45 @@ import UIKit
 final class MasterSearchViewController: UIViewController {
     
     private lazy var searchViewController = UISearchController(searchResultsController: searchResultViewController)
-    private let searchResultViewController = SearchResultViewController()
-    private let bibleManager = BibleManager.shared
-    private var booksForSearch = [Book]()
+    let searchResultViewController = SearchResultViewController()
+    let bibleManager = BibleManager.shared
+    var booksForSearch = [Book]()
+    var selectedBooksCollectionView: UICollectionView? = nil
     
-    private var bookSelectorView: BooksSelectorView? = nil
-    
-    @objc private func endSelectingButtonDidTap() {
-        removeSelectionView()
-    }
+    var bookSelectorView: BibleNavigatorViewController? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSearchViewController()
         subscribeForNotification(#selector(setupBible), name: BibleManager.bibleDidChangeNotification)
         setupBible()
+        searchViewController.searchBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(searchBarDidTap)))
     }
-
+    
+    @objc private func searchBarDidTap() {
+        if searchType == .custom, selectedBooksCollectionView == nil {
+            setupSelectedBooksCollectionView()
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        searchViewController.searchBar.becomeFirstResponder()
+        if searchType == .custom {
+            setupSelectedBooksCollectionView()
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        removeSelectedBooksCollectionView()
+    }
     
     private var searchType: SearchBookType = .bible {
         willSet {
             if searchType == .custom, newValue != .custom {
                 removeSelectionView()
+                removeSelectedBooksCollectionView()
             }
         }
         didSet {
@@ -53,40 +70,38 @@ extension MasterSearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         searchType = SearchBookType(rawValue: selectedScope) ?? .bible
     }
+
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         removeSelectionView()
-    }
-    
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        if searchType == .custom {
-            setupSelectionView()
-        }
+        removeSelectedBooksCollectionView()
     }
 }
 
 // MARK: - Search in bible && SearchResultHandler
 extension MasterSearchViewController: SearchResultHandler {
     /// Get text from searchVC.searchBar and searching in booksForSearch
-    private func updateSearchResults() {
+    func updateSearchResults() {
         guard let text = searchViewController.searchBar.text, text != "" else { return }
         let lText = text.lowercased()
-        var results = [SearchResultItem]()
+        var results = [[SearchResultItem]]()
         booksForSearch.forEach { book in
+            var items: [SearchResultItem] = []
             book.chapters.enumerated().forEach { chapter in
                 chapter.element.enumerated().forEach { row in
                     if let range = row.element.lowercased().range(of: lText) {
                         let item = SearchResultItem(bookName: book.name, abbrev: book.abbrev, chapterOffset: chapter.offset, row: row.offset, verse: row.element, range: range)
-                        results.append(item)
+                        items.append(item)
                     }
                 }
             }
+            results.append(items)
         }
         searchResultViewController.results = results
     }
 
     func didSelectResult(item: SearchResultItem) {
         let bibleManager = BibleManager.shared
-        bibleManager.openViewController(self, target: .bible(abbrev: item.abbrev, chapter: item.chapterOffset, row: item.row))
+        bibleManager.openViewController(self, target: .bibleWithAbbrev(abbrev: item.abbrev, chapter: item.chapterOffset, rows: [item.row]))
     }
 }
 
@@ -101,7 +116,8 @@ extension MasterSearchViewController {
         searchViewController.searchBar.returnKeyType = .done
         navigationItem.hidesSearchBarWhenScrolling = false
         searchViewController.searchBar.delegate = self
-        searchViewController.searchBar.scopeButtonTitles = ["Bible", "Old Testament", "New Testament", "Select Books"]
+        searchViewController.searchBar.showsCancelButton = false
+        searchViewController.searchBar.scopeButtonTitles = SearchBookType.allCases.map(\.title)
     }
     
     @objc private func setupBible() {
@@ -124,71 +140,78 @@ extension MasterSearchViewController {
             booksForSearch = bibleManager.newTestament
         case .custom:
             booksForSearch = []
-            setupSelectionView()
+            presentBookSelector()
+            setupSelectedBooksCollectionView()
         }
     }
 }
 
 // MARK: - SelectionView
-extension MasterSearchViewController: BookSelectorDelegate {
-    func didSelectBook(_ book: Book) {
-        var oldBooksSequence = Set(booksForSearch)
-        oldBooksSequence.insert(book)
+extension MasterSearchViewController: BibleNavigatorDelegate {
+    func didSelect(book: Book, chapterOffset: Int?, verse: Int?) {
+        booksForSearch.append(book)
+        let oldBooksSequence = Set(booksForSearch)
         booksForSearch = []
         bibleManager.bible.forEach { bibleBook in
             if oldBooksSequence.contains(bibleBook) {
                 booksForSearch.append(bibleBook)
             }
         }
+        selectedBooksCollectionView?.reloadData()
         updateSearchResults()
     }
-    
-    func didDeselectBook(_ book: Book) {
+
+    func doneButtonDidTap() {
+        removeSelectionView()
+    }
+
+    func didDeselect(book: Book, chapterOffset: Int?, verse: Int?) {
         if booksForSearch.contains(book), let index = booksForSearch.enumerated().first(where: { $0 .element == book } )?.offset {
             booksForSearch.remove(at: index)
+            selectedBooksCollectionView?.reloadItems(at: [[0, index]])
         }
         updateSearchResults()
     }
     
-    func didTapDoneButton() {
-        removeSelectionView()
-    }
-    
-    private func setupSelectionView() {
-        guard bookSelectorView == nil else { return }
-        let controller = BooksSelectorView(nibName: "BooksSelectorView", bundle: nil)
-        self.bookSelectorView = controller
-        let selectorView = controller.view!
-        searchViewController.view.addSubview(selectorView)
-        selectorView.translatesAutoresizingMaskIntoConstraints = false
-        selectorView.topAnchor.constraint(equalTo: searchViewController.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        selectorView.backgroundColor = .clear
-        selectorView.trailingAnchor.constraint(equalTo: searchViewController.view.safeAreaLayoutGuide.trailingAnchor, constant: -5).isActive = true
-        selectorView.widthAnchor.constraint(equalToConstant: 240).isActive = true
-        selectorView.heightAnchor.constraint(equalToConstant: 300).isActive = true
-        let mask = UIImageView(image: UIImage(named: "bookSelectorStroke"))
-        mask.frame = CGRect(origin: .zero, size: CGSize(width: 240, height: 300))
-//        selectorView.mask = mask
-        selectorView.addSubview(mask)
-        controller.delegate = self
-        searchViewController.addChild(controller)
-        controller.didMove(toParent: self)
+    func presentBookSelector() {
+        bookSelectorView = BibleNavigatorViewController(type: .book, options: [
+            .multipleSelection,
+            .createDoneLeftBarButton
+        ])
+        bookSelectorView?.delegate = self
+        bookSelectorView?.isModalInPresentation = true
+        let navigationController = UINavigationController(rootViewController: bookSelectorView!)
+        if let presentationController = navigationController.presentationController as? UISheetPresentationController {
+            presentationController.detents = [.medium()]
+        }
+        self.present(navigationController, animated: true)
     }
     
     private func removeSelectionView() {
-        bookSelectorView?.willMove(toParent: nil)
-        bookSelectorView?.view.removeFromSuperview()
-        bookSelectorView?.removeFromParent()
+        bookSelectorView?.navigationController?.dismiss(animated: true)
         bookSelectorView = nil
     }
 }
 
 // MARK: - Models
 private extension MasterSearchViewController {
-    private enum SearchBookType: Int {
+    private enum SearchBookType: Int, CaseIterable {
         case bible
         case old
         case new
         case custom
+        
+        var title: String {
+            switch self {
+            case .bible:
+                return "Bible"
+            case .old:
+                return "Old Testament"
+            case .new:
+                return "New Testament"
+            case .custom:
+                return "Select Books"
+            }
+        }
     }
 }

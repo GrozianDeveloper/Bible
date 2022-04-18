@@ -12,11 +12,9 @@ final class SettingsViewController: UITableViewController {
     private let sections = SettingType.allCases
     private let bibleVersions = BibleVersion.allCases
     private let fontSettings = FontSettingType.allCases
+    private let simpleSettings = BibleManager.SwitchableSettings.allCases
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        tableView.reloadData()
-    }
+    private let bibleManager = BibleManager.shared
     
     private var cellTextPreviewer: TextTableViewCell?
     private var textPreviewerText = BibleManager.shared.bible[0].chapters[0][0]
@@ -27,6 +25,14 @@ final class SettingsViewController: UITableViewController {
         currentPointSize = CGFloat(point)
         cell.label.font = .systemFont(ofSize: CGFloat(point))
         cell.label.text = "\(Int(point)) " + textPreviewerText
+//        if let indexPath = tableView.indexPath(for: cell) {
+//            tableView.reloadRows(at: [indexPath], with: .none)
+//        }
+    }
+    
+    @objc private func updateTextPreviewerText() {
+        textPreviewerText = BibleManager.shared.bible[0].chapters[0][0]
+        updateTextPreviewerFont(point: Float(currentPointSize))
     }
 }
 
@@ -34,8 +40,10 @@ final class SettingsViewController: UITableViewController {
 extension SettingsViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(TextTableViewCell.self, forCellReuseIdentifier: TextTableViewCell.identifier)
+        tableView.register(TextTableViewCell.nib, forCellReuseIdentifier: TextTableViewCell.identifier)
         tableView.register(SliderTableViewCell.nib, forCellReuseIdentifier: SliderTableViewCell.identifier)
+        tableView.register(ToggleTableViewCell.nib, forCellReuseIdentifier: ToggleTableViewCell.identifier)
+        subscribeForNotification(#selector(updateTextPreviewerText), name: BibleManager.bibleDidChangeNotification)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -49,67 +57,89 @@ extension SettingsViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch sections[indexPath.section] {
         case .bibleVersion:
-            let detailVC = BibleVersionDetailsViewController()
-            detailVC.setup(version: bibleVersions[indexPath.row])
-            navigationController?.pushViewController(detailVC, animated: true)
-        case .font:
+            let previousVersion = bibleManager.bibleVersion
+            bibleManager.setBibleVersion(bibleVersions[indexPath.row])
+            if let offset = bibleVersions.enumerated().first(where: { $0.element == previousVersion })?.offset {
+                tableView.reloadRows(at: [indexPath, [indexPath.section, offset]], with: .none)
+            } else {
+                tableView.reloadSections([indexPath.section], with: .none)
+            }
+        default:
             break
         }
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch sections[indexPath.section] {
-        case .bibleVersion:
-            return 40
+        case .simpleSettings:
+            return UITableView.automaticDimension
         case .font:
             switch fontSettings[indexPath.row] {
             case .textPresenter:
                 return 40
             case .slider:
-                return 60
+                return 40
             }
+        case .bibleVersion:
+            return 40
         }
-    }
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].title
     }
 }
 
 // MARK: - Data Source
 extension SettingsViewController {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section].title
+    }
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell
         switch sections[indexPath.section] {
-        case .bibleVersion:
-            let cell = TextTableViewCell(components: [.rightImageView])
-            cell.label.text = bibleVersions[indexPath.row].title
-            if BibleManager.shared.bibleVersion == bibleVersions[indexPath.row] {
-                cell.rightImageView?.image = UIImage(systemName: "circle.fill")
+        case .simpleSettings:
+            cell = tableView.dequeueReusableCell(withIdentifier: ToggleTableViewCell.identifier, for: indexPath)
+            if let cell = cell as? ToggleTableViewCell {
+                let item = simpleSettings[indexPath.row]
+                cell.label.text = item.title
+                cell.cellIndex = indexPath
+                if let key = item.userDefaultKey {
+                    cell.switchToggle.isOn = UserDefaults.standard.bool(forKey: key)
+                }
+                cell.valueChanged = handleSimpleSettignsValueChanged(for:_:)
             }
-            cell.wholeViewLeadingConstaint.constant += 5
-            return cell
         case .font:
             switch fontSettings[indexPath.row] {
             case .textPresenter:
-                let cell = TextTableViewCell()
-                cellTextPreviewer = cell
-                cell.wholeViewLeadingConstaint.constant += 5
-                let font = BibleManager.shared.font
-                cell.label.font = font
-                cell.label.text = "\(Int(round(font.pointSize))) " + textPreviewerText
-                cell.label.numberOfLines = 1
-                return cell
+                cell = tableView.dequeueReusableCell(withIdentifier: TextTableViewCell.identifier, for: indexPath)
+                if let cell = cell as? TextTableViewCell {
+                    cellTextPreviewer = cell
+//                    cell.wholeViewLeadingConstaint.constant += 5
+                    cell.label.font = .systemFont(ofSize: currentPointSize)
+                    cell.label.text = "\(Int(round(currentPointSize))) " + textPreviewerText
+                    cell.label.numberOfLines = 1
+                }
             case .slider:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: SliderTableViewCell.identifier) as? SliderTableViewCell else { return UITableViewCell() }
-                cell.slider.minimumValue = 14
-                cell.slider.maximumValue = 44
-                let stepedValue = cell.calculateStepSliderValue(Float(currentPointSize))
-                cell.slider.value = stepedValue
-                cell.selectionStyle = .none
-                cell.valueDidChange = updateTextPreviewerFont(point:)
-                return cell
+                cell = tableView.dequeueReusableCell(withIdentifier: SliderTableViewCell.identifier, for: indexPath)
+                if let cell = cell as? SliderTableViewCell {
+                    cell.slider.minimumValue = 14
+                    cell.slider.maximumValue = 33
+                    let stepedValue = cell.calculateStepSliderValue(Float(currentPointSize))
+                    cell.slider.value = stepedValue
+                    cell.valueDidChange = updateTextPreviewerFont(point:)
+                }
             }
+            cell.separatorInset = .init(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
+        case .bibleVersion:
+            cell = tableView.dequeueReusableCell(withIdentifier: "LabelAndRightImageCell", for: indexPath)
+            cell.separatorInset = .init(top: 0, left: 15, bottom: 0, right: 15)
+
+            let label = cell.viewWithTag(1) as? UILabel
+            label?.text = bibleVersions[indexPath.row].title
+
+            let imageView = cell.viewWithTag(2) as? UIImageView
+            imageView?.image = BibleManager.shared.bibleVersion == bibleVersions[indexPath.row] ? UIImage(systemName: "circle.fill") : nil
         }
+        cell.selectionStyle = .none
+        return cell
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -118,10 +148,19 @@ extension SettingsViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch sections[section] {
-        case .bibleVersion:
-            return bibleVersions.count
+        case .simpleSettings:
+            return simpleSettings.count
         case .font:
             return fontSettings.count
+        case .bibleVersion:
+            return bibleVersions.count
+        }
+    }
+    
+    private func handleSimpleSettignsValueChanged(for index: IndexPath, _ bool: Bool) {
+        let item = simpleSettings[index.row]
+        if let key = item.userDefaultKey {
+            UserDefaults.standard.set(bool, forKey: key)
         }
     }
 }
@@ -129,15 +168,19 @@ extension SettingsViewController {
 // MARK: - Models
 extension SettingsViewController {
     private enum SettingType: CaseIterable {
-        case bibleVersion
+        /// Toggles
+        case simpleSettings
         case font
+        case bibleVersion
         
         var title: String {
             switch self {
-            case .bibleVersion:
-                return "Bible Versions".localized(.ui)
+            case .simpleSettings:
+                return "Simple Settings"
             case .font:
                 return "Fonts".localized(.ui)
+            case .bibleVersion:
+                return "Bible Versions".localized(.ui)
             }
         }
     }

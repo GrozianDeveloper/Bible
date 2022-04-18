@@ -10,10 +10,10 @@ import Foundation
 // MARK: - Last Opened Chapter
 extension BibleManager {
     func getLastOpenedChapterOffset() -> Int {
-        return UserDefaults.standard.integer(forKey: UserDefaultsKey.lastOpenedChapter)
+        return UserDefaults.standard.integer(forKey: UserDefaultsKeys.lastOpenedChapter)
     }
 
     func setLastOpenedChapter(offset: Int) {
-        UserDefaults.standard.set(offset, forKey: UserDefaultsKey.lastOpenedChapter)
+        UserDefaults.standard.set(offset, forKey: UserDefaultsKeys.lastOpenedChapter)
     }
 }

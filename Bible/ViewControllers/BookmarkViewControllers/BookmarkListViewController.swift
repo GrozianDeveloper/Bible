@@ -9,9 +9,6 @@ import UIKit
 
 final class BookmarkListViewController: UITableViewController {
     
-    /// Used for opening bookmark with it's ObjectIdentifier (bookmark.id)
-    static let openBookmarkUserDefaultsKey = "openBookmark"
-    
     let bibleManager = BibleManager.shared
     var bookmarks: [Bookmark] = []
     var removedBookmarks: Set<ObjectIdentifier> = []

@@ -10,7 +10,10 @@ import UIKit
 // MARK: - UIPageViewControllerDelegate
 extension BibleViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        updateActiveChapterOffset()
+        guard let chapterController = bookPageController.viewControllers?.first as? ChapterViewController else {
+            return
+        }
+        activeChapterOffset = chapterController.chapterOffset
     }
 }
 
@@ -26,15 +29,5 @@ extension BibleViewController: UIPageViewControllerDataSource {
         guard let index = pages.firstIndex(of: viewController as! ChapterViewController), index < pages.count - 1 else  { return nil }
         let next = pages[index + 1]
         return next
-    }
-}
-
-// MARK: Support
-extension BibleViewController {
-    private func updateActiveChapterOffset() {
-        guard let chapterController = bookViewController.viewControllers?.first as? ChapterViewController else {
-            return
-        }
-        activeChapterOffset = chapterController.chapterOffset
     }
 }

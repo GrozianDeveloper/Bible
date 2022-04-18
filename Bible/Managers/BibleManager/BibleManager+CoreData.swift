@@ -31,7 +31,7 @@ extension BibleManager {
     }
     
     // MARK: - Delete
-    func deleteBookmark(bookmark: Bookmark) {
+    func deleteBookmark(bookmark: Bookmark, updateReferencesToActiveBook: Bool = true) {
         let index: Int = bookmarks.firstIndex(where: { $0 == bookmark } )!
         context.delete(bookmark)
         bookmarks.remove(at: index)
@@ -43,6 +43,9 @@ extension BibleManager {
     func deleteBookmarkAt(index: Int) {
         context.delete(bookmarks[index])
         bookmarks.remove(at: index)
+        if let book = activeBook {
+            updateBookmarkReferencesToBook(book: book)
+        }
     }
     
     // MARK: - Fetch

@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import UIKit
 
 extension String {
     func localized(_ type: LocalizationType = .bible) -> String {
-        return NSLocalizedString(self, tableName: type.rawValue, bundle: BibleManager.shared.localizationBundle, value: self, comment: "")
+        let bundle = type == .bible ? BibleManager.shared.localizationBundle! : .main
+        return NSLocalizedString(self, tableName: type.rawValue, bundle: bundle, value: self, comment: "")
     }
     
     enum LocalizationType: String {

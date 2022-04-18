@@ -13,11 +13,16 @@ extension BookmarkListViewController {
         if tableView.isEditing {
             let bookmark = bookmarks[indexPath.row]
             selectedBookmarks.insert(bookmark)
-            let cell = tableView.cellForRow(at: indexPath)
-            cell?.selectionStyle = .none
+            if let button = navigationItem.rightBarButtonItem, button.title != nil {
+                button.title = nil
+                let trashImage = UIImage(systemName: "trash")
+                button.image = trashImage?.withRenderingMode(.alwaysTemplate)
+                button.tintColor = .systemRed
+            }
         } else {
-            let bookrmark = bookmarks[indexPath.row]
-            let detailVC = BookmarkDetailViewController(bookmark: bookrmark)
+            let bookmark = bookmarks[indexPath.row]
+            let detailVC = BookmarkDetailViewController(bookmark: bookmark)
+            detailVC.bookmarkWasChanged = handleBookmarkChange
             navigationController?.pushViewController(detailVC, animated: true)
         }
     }
@@ -26,6 +31,11 @@ extension BookmarkListViewController {
         if tableView.isEditing {
             let bookmark = bookmarks[indexPath.row]
             selectedBookmarks.remove(bookmark)
+            if selectedBookmarks.isEmpty, let button = navigationItem.rightBarButtonItem {
+                button.title = "Done"
+                button.image = nil
+                button.tintColor = .label
+            }
         }
     }
     
@@ -34,7 +44,8 @@ extension BookmarkListViewController {
         case .delete:
             let deletedBookmark = bookmarks.remove(at: indexPath.row)
             removedBookmarks.insert(deletedBookmark.id)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.deleteRows(at: [indexPath], with: .left)
+            checkIsNeededToHideRemoveBarButton()
         default: break
         }
     }
@@ -43,7 +54,6 @@ extension BookmarkListViewController {
         if let offset = bookmarks.enumerated().first(where: { $0.element.id == id } )?.offset {
             tableView.reloadRows(at: [[0, offset]], with: .none)
         }
-        
     }
 }
 

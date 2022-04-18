@@ -36,7 +36,7 @@ extension HistoryViewController {
 
         let laterAction = UIAlertAction(title: "Cancel".localized(), style: .cancel, handler: nil)
         let goAction = UIAlertAction(title: "Go".localized(), style: .default) { [weak self] _ in
-            self?.bibleManager.openViewController(self, target: .bible(abbrev: item.abbrev, chapter: item.chapterOffset, row: nil))
+            self?.bibleManager.openViewController(self, target: .bibleWithAbbrev(abbrev: item.abbrev, chapter: item.chapterOffset, rows: nil))
         }
         let alertController = UIAlertController(title: nil, message:  "Do you want to go at \(name) \(item.chapterOffset + 1)", preferredStyle: .alert)
         alertController.addAction(laterAction)
@@ -54,13 +54,15 @@ extension HistoryViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = TextTableViewCell(components: [.leftLabel])
+        let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath)
         let item = history[indexPath.row]
         let bookName = findBookByAbbrev(item.abbrev)?.name ?? "Do not remember name"
-        cell.leftLabel?.text = item.creationDate
-        cell.label.text = " \(bookName) \(item.chapterOffset + 1)"
-        cell.label.textAlignment = .center
-        cell.label.font = .systemFont(ofSize: 20)
+        let leftLabel = cell.viewWithTag(1) as? UILabel
+        leftLabel?.text = item.creationDate
+        let mainLabel = cell.viewWithTag(2) as? UILabel
+        mainLabel?.text = " \(bookName) \(item.chapterOffset + 1)"
+        mainLabel?.textAlignment = .center
+        mainLabel?.font = .systemFont(ofSize: 20)
         return cell
     }
 }
@@ -68,7 +70,7 @@ extension HistoryViewController {
 // MARK: Setup
 private extension HistoryViewController  {
     private func setupTableView() {
-        tableView.register(TextTableViewCell.self, forCellReuseIdentifier: TextTableViewCell.identifier)
+        tableView.register(TextTableViewCell.nib, forCellReuseIdentifier: TextTableViewCell.identifier)
         tableView.separatorStyle = .none
     }
     

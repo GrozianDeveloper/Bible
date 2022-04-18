@@ -7,21 +7,21 @@
 
 import Foundation
 
-class BibleHistoryItem: Codable, Equatable {
+final class BibleHistoryItem: Codable, Equatable {
     init(abbrev: String, chapterOffset: Int) {
         self.abbrev = abbrev
         self.chapterOffset = chapterOffset
 
         let date = Date()
         let formater = DateFormatter()
-        formater.dateFormat = "MMM d"
+        formater.dateFormat = "d MMM H:MM"
         creationDate = formater.string(from: date)
     }
-    
+
     var abbrev: String
     var chapterOffset: Int
     let creationDate: String
-    
+
     static func == (lhs: BibleHistoryItem, rhs: BibleHistoryItem) -> Bool {
         return lhs.abbrev == rhs.abbrev && lhs.chapterOffset == rhs.chapterOffset
     }

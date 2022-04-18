@@ -19,21 +19,21 @@ extension BibleManager {
         // save
         let encoder = JSONEncoder()
         let data = try? encoder.encode(newHistory)
-        userDefaults.set(data, forKey: UserDefaultsKey.readingHistory)
+        userDefaults.set(data, forKey: UserDefaultsKeys.readingHistory)
         garanteeMainThread {
             postNotification(BibleManager.historyDidChangeNotification)
         }
     }
 
     func getHistory() -> [BibleHistoryItem] {
-        guard let encodedData = userDefaults.data(forKey: UserDefaultsKey.readingHistory) else { return [] }
+        guard let encodedData = userDefaults.data(forKey: UserDefaultsKeys.readingHistory) else { return [] }
         let decoder = JSONDecoder()
         let history = try? decoder.decode([BibleHistoryItem].self, from: encodedData)
         return history ?? []
     }
     
     func removeHistory() {
-        userDefaults.removeObject(forKey: UserDefaultsKey.readingHistory)
+        userDefaults.removeObject(forKey: UserDefaultsKeys.readingHistory)
         garanteeMainThread {
             postNotification(BibleManager.historyDidChangeNotification)
         }
