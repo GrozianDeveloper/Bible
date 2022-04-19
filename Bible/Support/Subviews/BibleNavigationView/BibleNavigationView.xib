@@ -22,12 +22,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillEqually" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="xMj-2W-LA0">
-                    <rect key="frame" x="100" y="92" width="153" height="31"/>
+                    <rect key="frame" x="100" y="114" width="153" height="31"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x63-Ek-IGC">
                             <rect key="frame" x="0.0" y="0.0" width="76" height="31"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <rect key="contentStretch" x="0.0" y="0.0" width="1" height="0.90000000000000002"/>
+                            <color key="tintColor" systemColor="secondaryLabelColor"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" title="Genesis"/>
                             <buttonConfiguration key="configuration" style="plain" title="Genesis"/>
@@ -38,6 +39,7 @@
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JIc-Uz-voy">
                             <rect key="frame" x="77" y="0.0" width="76" height="31"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <color key="tintColor" systemColor="secondaryLabelColor"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" title="1"/>
                             <buttonConfiguration key="configuration" style="plain" title="1"/>
@@ -47,13 +49,16 @@
                         </button>
                     </subviews>
                     <color key="backgroundColor" systemColor="secondaryLabelColor"/>
+                    <constraints>
+                        <constraint firstItem="JIc-Uz-voy" firstAttribute="height" secondItem="x63-Ek-IGC" secondAttribute="height" id="JNj-hf-7Ax"/>
+                    </constraints>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="xMj-2W-LA0" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="Pjl-A4-VOB"/>
-                <constraint firstItem="xMj-2W-LA0" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="YZT-XV-8cP"/>
+                <constraint firstItem="xMj-2W-LA0" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="YZT-XV-8cP"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="123.91304347826087" y="-119.53125"/>

@@ -8,59 +8,113 @@
 import UIKit
 
 final class CompareVersionsViewController: UIViewController {
+    @IBOutlet weak var separatorCenterXConstaint: NSLayoutConstraint!
+
+    var isDragingSeparator = false
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            let currentTouch = touch.location(in: view)
+            separator.frame.contains(currentTouch)
+        }
+    }
     
-    @IBOutlet weak var stackView: UIStackView!
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            let currentTouch = touch.location(in: view).x
+            let previousTouch = touch.previousLocation(in: view).x
+            let shifting = currentTouch - previousTouch
+            let maximumOffset = (view.frame.width / 2) / 2
+            let newOffset = separatorCenterXConstaint.constant + shifting
+            if abs(newOffset) < maximumOffset {
+                separatorCenterXConstaint.constant = newOffset
+            } else {
+                let isOnLeftSide = (newOffset - maximumOffset) < .zero
+                separatorCenterXConstaint.constant = isOnLeftSide ? -maximumOffset : maximumOffset
+            }
+        }
+    }
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        isDragingSeparator = false
+    }
+    
+//    @IBOutlet weak var separator: UIImageView!
+    
+    @IBOutlet weak var separator: UILabel!
     let bibleManager = BibleManager.shared
 
     var currentChapter: Int = 0
 
-    var leftVersion: BibleVersion? = nil
-    var leftBible: [Book]? = nil
-    var leftBook: Book? = nil
-    var leftChapter: [String] = []
-
-    var rightVersion: BibleVersion? = nil
-    var rightBible: [Book]? = nil
-    var rightBook: Book? = nil
-    var rightChapter: [String] = []
-
-    let leftTableView = UITableView()
-    let rightTableView = UITableView()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-    func openVersionSelector(forLeft isLeft: Bool) {
-        let view = UITableView()
-        view
-    }
-    
-    func changeCurrentBooks(abbrev: String) {
-        guard let leftVersion = leftVersion, let rightVersion = rightVersion else { return }
-        let chapter = currentChapter
-        let abbrev = leftBook?.abbrev ?? bibleManager.activeBook?.abbrev ?? "gn"
-        bibleManager.getBible(version: leftVersion) { [weak self] leftBible in
-            self?.leftBible = leftBible
-            self?.leftBook = leftBible.first(where: { $0.abbrev == abbrev })
-            self?.updateChaptersViewController(isLeft: true, chapter: chapter)
-        }
-        bibleManager.getBible(version: rightVersion) { [weak self] rightBible in
-            self?.rightBible = rightBible
-            self?.rightBook = rightBible.first(where: { $0.abbrev == abbrev })
-            self?.updateChaptersViewController(isLeft: false, chapter: chapter)
+    let userDefault = UserDefaults.standard
+    var leftVersion: BibleVersion! {
+        didSet {
+            let name = shortNameForVersion(leftVersion)
+            garanteeMainThread { [weak self] in
+                self?.compareView.leftVersionButton.setTitle(name, for: .normal)
+            }
         }
     }
+    var leftBible: [Book]!
+    var leftBook: Book! {
+        didSet {
+            if !leftBook.chapters.indices.contains(currentChapter) {
+                currentChapter = 0
+            }
+            leftChapter = leftBook.chapters[currentChapter].enumerated().map {
+                return "\($0.offset + 1). \($0.element) "
+            }
+            garanteeMainThread { [weak self] in
+                self?.leftTableView.reloadData()
+            }
+        }
+    }
+    private(set) var leftChapter: [String] = []
+
+    var rightVersion: BibleVersion! {
+        didSet {
+            let name = shortNameForVersion(rightVersion)
+            garanteeMainThread { [weak self] in
+                self?.compareView.rightVersionButton.setTitle(name, for: .normal)
+            }
+        }
+    }
+    var rightBible: [Book]!
+    var rightBook: Book! {
+        didSet {
+            if !rightBook.chapters.indices.contains(currentChapter) {
+                currentChapter = 0
+            }
+            rightChapter = rightBook.chapters[currentChapter].enumerated().map {
+                return "\($0.offset + 1). \($0.element) "
+            }
+            garanteeMainThread { [weak self] in
+                self?.rightTableView.reloadData()
+            }
+        }
+    }
+    private(set) var rightChapter: [String] = []
+
+    @IBOutlet private(set) weak var leftTableView: UITableView!
+    @IBOutlet private(set) weak var rightTableView: UITableView!
     
-    
-    func updateChaptersViewController(isLeft: Bool, chapter: Int) {
-        guard let book = isLeft ? leftBook : rightBook else { return }
-        let newChapter = ChapterViewController(book: book, offset: chapter)
-//        if isLeft {
-//            leftBookViewController = newChapter
-//        } else {
-//            rightBookViewController = newChapter
-//        }
+    let compareView = VersionsCompareView()
+}
+
+extension CompareVersionsViewController {
+    struct CVCUserDefaultKeys {
+        static let previousLeftVersionKey = "PreviousLeftVersion"
+        static let previousRightVersionKey = "PreviousRightVersion"
+    }
+}
+
+extension CompareVersionsViewController {
+    private func shortNameForVersion(_ version: BibleVersion) -> String {
+        switch version {
+        case .kingJamesVersion:
+            return " KJV "
+        case .Synodal:
+            return " СНД "
+        }
     }
 }

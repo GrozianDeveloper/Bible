@@ -24,7 +24,7 @@ class ListPreviewViewController: UIViewController {
     }
 
     let tableView: UITableView
-    var simpleDidSelectItemAt: ((IndexPath) -> ())?
+    var simpleSelectHandle: ((IndexPath) -> ())?
 }
 
 // MARK: - Life Cycle
@@ -46,7 +46,7 @@ extension ListPreviewViewController {
 
 extension ListPreviewViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        simpleDidSelectItemAt?(indexPath)
+        simpleSelectHandle?(indexPath)
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

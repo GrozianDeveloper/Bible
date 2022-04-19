@@ -8,17 +8,18 @@
 import UIKit
 
 final class BibleNavigationView: UIView {
-
     @IBOutlet private var contentView: UIView!
 
-    @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var bookButton: UIButton!
     @IBOutlet weak var chapterButton: UIButton!
 
     var bookButtonDidTapCallBack: (() -> ())?
     var chapterButtonDidTapCallBack: (() -> ())?
     
-    override init(frame: CGRect) {
+    var isSetuped = false
+    
+    override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         setupView()
     }

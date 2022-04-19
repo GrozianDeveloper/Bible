@@ -17,11 +17,11 @@ extension BibleViewController {
     }
     
     private func setupLeftBarItem() {
-        let item = UIBarButtonItem(image: UIImage(systemName: "chevron.left.circle"), style: .plain, target: self, action: #selector(leftBarItemDidTap))
+        let item = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(leftBarItemDidTap))
         navigationItem.leftBarButtonItem = item
     }
     private func setupRightBarItem() {
-        let item = UIBarButtonItem(image: UIImage(systemName: "chevron.right.circle"), style: .plain, target: self, action: #selector(rightBarItemDidTap))
+        let item = UIBarButtonItem(image: UIImage(systemName: "chevron.right"), style: .plain, target: self, action: #selector(rightBarItemDidTap))
         navigationItem.rightBarButtonItem = item
     }
 }
