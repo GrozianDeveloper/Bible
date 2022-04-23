@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - UITextViewDelegate
 extension BookmarkDetailViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if let newRange = Range(range) {
@@ -16,25 +17,6 @@ extension BookmarkDetailViewController: UITextViewDelegate {
             }
         }
         return true
-    }
-    
-    private func checkForCreateReference(check character: String, at location: Int) {
-        let isMinus = character == "-"
-        if isMinus || character == "+" {
-            // check previous character
-            let nsRange = NSRange(location: location - 1, length: 1)
-            guard textView.text.hasRange(nsRange), let previousCharacterRange = Range(nsRange) else { return }
-            let previousCharacter = textView.text.substring(with: previousCharacterRange).lowercased()
-            if previousCharacter == "v" {
-                textView.text.deleteCharactersInRange(nsRange)
-                commandAtLocation = location
-                executingCommand = isMinus ? .reference : .referenceWith
-                textView.endEditing(true)
-                presentVerseSelector()
-            }
-        } else if verseSelectorView != nil {
-            removeVerseSelector()
-        }
     }
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
@@ -116,6 +98,29 @@ private extension BookmarkDetailViewController {
     }
 }
 
+// MARK: - Support
+extension BookmarkDetailViewController {
+    private func checkForCreateReference(check character: String, at location: Int) {
+        let isMinus = character == "-"
+        if isMinus || character == "+" {
+            // check previous character
+            let nsRange = NSRange(location: location - 1, length: 1)
+            guard textView.text.hasRange(nsRange), let previousCharacterRange = Range(nsRange) else { return }
+            let previousCharacter = textView.text.substring(with: previousCharacterRange).lowercased()
+            if previousCharacter == "v" {
+                textView.text.deleteCharactersInRange(nsRange)
+                commandAtLocation = location
+                executingCommand = isMinus ? .reference : .referenceWith
+                textView.endEditing(true)
+                presentVerseSelector()
+            }
+        } else if verseSelectorView != nil {
+            removeVerseSelector()
+        }
+    }
+}
+
+// MARK: - String Extension
 fileprivate extension String {
     func hasRange(_ range: NSRange) -> Bool {
         return Range(range, in: self) != nil

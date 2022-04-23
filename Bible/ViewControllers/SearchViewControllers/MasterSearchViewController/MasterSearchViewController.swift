@@ -9,14 +9,29 @@ import UIKit
 
 final class MasterSearchViewController: UIViewController {
     
+    private let bibleManager = BibleManager.shared
+
     private lazy var searchViewController = UISearchController(searchResultsController: searchResultViewController)
     let searchResultViewController = SearchResultViewController()
-    let bibleManager = BibleManager.shared
     var booksForSearch = [Book]()
+    private var searchType: SearchBookType = .bible {
+        willSet {
+            if searchType == .custom, newValue != .custom {
+                removeSelectionView()
+                removeSelectedBooksCollectionView()
+            }
+        }
+        didSet {
+            setupBooksForSearch()
+        }
+    }
+
     var selectedBooksCollectionView: UICollectionView? = nil
-    
     var bookSelectorView: BibleNavigatorViewController? = nil
-    
+}
+
+// MARK: - Life Cycle
+extension MasterSearchViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSearchViewController()
@@ -25,11 +40,6 @@ final class MasterSearchViewController: UIViewController {
         searchViewController.searchBar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(searchBarDidTap)))
     }
     
-    @objc private func searchBarDidTap() {
-        if searchType == .custom, selectedBooksCollectionView == nil {
-            setupSelectedBooksCollectionView()
-        }
-    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -42,18 +52,6 @@ final class MasterSearchViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         removeSelectedBooksCollectionView()
-    }
-    
-    private var searchType: SearchBookType = .bible {
-        willSet {
-            if searchType == .custom, newValue != .custom {
-                removeSelectionView()
-                removeSelectedBooksCollectionView()
-            }
-        }
-        didSet {
-            setupBooksForSearch()
-        }
     }
 }
 
@@ -74,6 +72,12 @@ extension MasterSearchViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         removeSelectionView()
         removeSelectedBooksCollectionView()
+    }
+    
+    @objc private func searchBarDidTap() {
+        if searchType == .custom, selectedBooksCollectionView == nil {
+            setupSelectedBooksCollectionView()
+        }
     }
 }
 
@@ -98,51 +102,10 @@ extension MasterSearchViewController: SearchResultHandler {
         }
         searchResultViewController.results = results
     }
-
+    
     func didSelectResult(item: SearchResultItem) {
         let bibleManager = BibleManager.shared
         bibleManager.openViewController(self, target: .bibleWithAbbrev(abbrev: item.abbrev, chapter: item.chapterOffset, rows: [item.row]))
-    }
-}
-
-// MARK: - Setup & Updates
-extension MasterSearchViewController {
-    private func setupSearchViewController() {
-        searchResultViewController.delegate = self
-        searchViewController.loadViewIfNeeded()
-        navigationItem.searchController = searchViewController
-        searchViewController.searchResultsUpdater = self
-        searchViewController.searchBar.enablesReturnKeyAutomatically = false
-        searchViewController.searchBar.returnKeyType = .done
-        navigationItem.hidesSearchBarWhenScrolling = false
-        searchViewController.searchBar.delegate = self
-        searchViewController.searchBar.showsCancelButton = false
-        searchViewController.searchBar.scopeButtonTitles = SearchBookType.allCases.map(\.title)
-    }
-    
-    @objc private func setupBible() {
-        switch searchType {
-        case .custom:
-            let abbrevs = booksForSearch.map(\.abbrev)
-            booksForSearch = bibleManager.bible.filter { abbrevs.contains($0.abbrev) }
-        default:
-            setupBooksForSearch()
-        }
-    }
-
-    private func setupBooksForSearch() {
-        switch searchType {
-        case .bible:
-            booksForSearch = bibleManager.bible
-        case .old:
-            booksForSearch = bibleManager.oldTestament
-        case .new:
-            booksForSearch = bibleManager.newTestament
-        case .custom:
-            booksForSearch = []
-            presentBookSelector()
-            setupSelectedBooksCollectionView()
-        }
     }
 }
 
@@ -190,6 +153,47 @@ extension MasterSearchViewController: BibleNavigatorDelegate {
     private func removeSelectionView() {
         bookSelectorView?.navigationController?.dismiss(animated: true)
         bookSelectorView = nil
+    }
+}
+
+// MARK: - Setup & Updates
+extension MasterSearchViewController {
+    private func setupSearchViewController() {
+        searchResultViewController.delegate = self
+        searchViewController.loadViewIfNeeded()
+        navigationItem.searchController = searchViewController
+        searchViewController.searchResultsUpdater = self
+        searchViewController.searchBar.enablesReturnKeyAutomatically = false
+        searchViewController.searchBar.returnKeyType = .done
+        navigationItem.hidesSearchBarWhenScrolling = false
+        searchViewController.searchBar.delegate = self
+        searchViewController.searchBar.showsCancelButton = false
+        searchViewController.searchBar.scopeButtonTitles = SearchBookType.allCases.map(\.title)
+    }
+    
+    @objc private func setupBible() {
+        switch searchType {
+        case .custom:
+            let abbrevs = booksForSearch.map(\.abbrev)
+            booksForSearch = bibleManager.bible.filter { abbrevs.contains($0.abbrev) }
+        default:
+            setupBooksForSearch()
+        }
+    }
+
+    private func setupBooksForSearch() {
+        switch searchType {
+        case .bible:
+            booksForSearch = bibleManager.bible
+        case .old:
+            booksForSearch = bibleManager.oldTestament
+        case .new:
+            booksForSearch = bibleManager.newTestament
+        case .custom:
+            booksForSearch = []
+            presentBookSelector()
+            setupSelectedBooksCollectionView()
+        }
     }
 }
 

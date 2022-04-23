@@ -11,20 +11,16 @@ final class InteractiveLinkLabel: UILabel {
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.configure()
+        isUserInteractionEnabled = true
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.configure()
-    }
-    
-    func configure() {
         isUserInteractionEnabled = true
     }
     
     var urlDidTap: ((URL) -> ())?
-    
+
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let superBool = super.point(inside: point, with: event)
         

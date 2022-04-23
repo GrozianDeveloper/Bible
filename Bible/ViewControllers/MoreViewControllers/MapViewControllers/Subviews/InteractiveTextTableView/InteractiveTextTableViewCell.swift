@@ -10,8 +10,4 @@ import UIKit
 final class InteractiveTextTableViewCell: UITableViewCell, Nibable {
 
     @IBOutlet weak var label: InteractiveLinkLabel!
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
-    
 }

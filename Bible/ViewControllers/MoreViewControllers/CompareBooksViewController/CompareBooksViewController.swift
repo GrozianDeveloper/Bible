@@ -8,27 +8,18 @@
 import UIKit
 
 final class CompareVersionsViewController: UIViewController {
-    var verseCenteredOnScroll = true
-    @IBAction func toggleCenteringVerses(_ sender: UIBarButtonItem) {
-        verseCenteredOnScroll.toggle()
-        let centered = verseCenteredOnScroll
-        UIView.animate(withDuration: 0.2) {
-            sender.tintColor = centered ? .label : .secondaryLabel
-        }
-    }
     
-    
+    let userDefault = UserDefaults.standard
+    let bibleManager = BibleManager.shared
+
     @IBOutlet private(set) weak var leftTableView: UITableView!
     @IBOutlet private(set) weak var rightTableView: UITableView!
     let compareView = VersionsCompareView()
-    
+
     @IBOutlet private weak var separator: UIImageView!
     @IBOutlet private weak var separatorCenterXConstaint: NSLayoutConstraint!
     private(set) var isDragingSeparator = false
     var isDragingLeftTableView = true
-
-    let userDefault = UserDefaults.standard
-    let bibleManager = BibleManager.shared
 
     var chapterOffset: Int = 0
 
@@ -64,6 +55,16 @@ final class CompareVersionsViewController: UIViewController {
     }
     private(set) var rightChapter: [String] = []
     var presentedBibleNavigator: BibleNavigatorViewController? = nil
+    
+    var verseCenteredOnScroll = true
+    
+    @IBAction func toggleCenteringVerses(_ sender: UIBarButtonItem) {
+        verseCenteredOnScroll.toggle()
+        let centered = verseCenteredOnScroll
+        UIView.animate(withDuration: 0.2) {
+            sender.tintColor = centered ? .label : .secondaryLabel
+        }
+    }
 }
 
 // MARK: - Separator

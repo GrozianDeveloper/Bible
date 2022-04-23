@@ -19,21 +19,6 @@ final class SettingsViewController: UITableViewController {
     private var cellTextPreviewer: TextTableViewCell?
     private var textPreviewerText = BibleManager.shared.bible[0].chapters[0][0]
     private var currentPointSize = BibleManager.shared.font.pointSize
-
-    private func updateTextPreviewerFont(point: Float) {
-        guard let cell = cellTextPreviewer else { return }
-        currentPointSize = CGFloat(point)
-        cell.label.font = .systemFont(ofSize: CGFloat(point))
-        cell.label.text = "\(Int(point)) " + textPreviewerText
-//        if let indexPath = tableView.indexPath(for: cell) {
-//            tableView.reloadRows(at: [indexPath], with: .none)
-//        }
-    }
-    
-    @objc private func updateTextPreviewerText() {
-        textPreviewerText = BibleManager.shared.bible[0].chapters[0][0]
-        updateTextPreviewerFont(point: Float(currentPointSize))
-    }
 }
 
 // MARK: Life Cycle
@@ -112,7 +97,6 @@ extension SettingsViewController {
                 cell = tableView.dequeueReusableCell(withIdentifier: TextTableViewCell.identifier, for: indexPath)
                 if let cell = cell as? TextTableViewCell {
                     cellTextPreviewer = cell
-//                    cell.wholeViewLeadingConstaint.constant += 5
                     cell.label.font = .systemFont(ofSize: currentPointSize)
                     cell.label.text = "\(Int(round(currentPointSize))) " + textPreviewerText
                     cell.label.numberOfLines = 1
@@ -156,7 +140,22 @@ extension SettingsViewController {
             return bibleVersions.count
         }
     }
+}
+
+// MARK: Support
+extension SettingsViewController {
+    private func updateTextPreviewerFont(point: Float) {
+        guard let cell = cellTextPreviewer else { return }
+        currentPointSize = CGFloat(point)
+        cell.label.font = .systemFont(ofSize: CGFloat(point))
+        cell.label.text = "\(Int(point)) " + textPreviewerText
+    }
     
+    @objc private func updateTextPreviewerText() {
+        textPreviewerText = BibleManager.shared.bible[0].chapters[0][0]
+        updateTextPreviewerFont(point: Float(currentPointSize))
+    }
+
     private func handleSimpleSettignsValueChanged(for index: IndexPath, _ bool: Bool) {
         let item = simpleSettings[index.row]
         if let key = item.userDefaultKey {

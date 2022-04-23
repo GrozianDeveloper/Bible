@@ -9,11 +9,14 @@ import UIKit
 
 
 final class SearchResultViewController: UIViewController {
-    private var previousResults: [[SearchResultItem]] = []
+    
     private(set) var tableViewTopConstraint: NSLayoutConstraint!
+    private let tableView = UITableView()
+
     var headerTopCornersCurved = true
-    let tableView = UITableView()
+
     var delegate: SearchResultHandler?
+    private var previousResults: [[SearchResultItem]] = []
     var results: [[SearchResultItem]] = [] {
         willSet {
             previousResults = results
@@ -25,7 +28,10 @@ final class SearchResultViewController: UIViewController {
             }
         }
     }
+}
 
+// MARK: - Life Cycle
+extension SearchResultViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.sectionHeaderTopPadding = 0
@@ -45,14 +51,14 @@ final class SearchResultViewController: UIViewController {
     }
 }
 
-// MARK: - Delegate
+// MARK: - UITableViewDelegate
 extension SearchResultViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.didSelectResult(item: results[indexPath.section][indexPath.row])
     }
 }
 
-// MARK: - Data Source
+// MARK: - UITableViewDataSource
 extension SearchResultViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let item = results[section].first else { return nil }
@@ -61,10 +67,10 @@ extension SearchResultViewController: UITableViewDataSource {
         bufferView.clipsToBounds = true
         if headerTopCornersCurved {
             bufferView.layer.maskedCorners.insert(.layerMinXMinYCorner)
-            bufferView.layer.maskedCorners.insert(.layerMinXMinYCorner)
+            bufferView.layer.maskedCorners.insert(.layerMaxXMinYCorner)
         } else {
             bufferView.layer.maskedCorners.remove(.layerMinXMinYCorner)
-            bufferView.layer.maskedCorners.remove(.layerMinXMinYCorner)
+            bufferView.layer.maskedCorners.remove(.layerMaxXMinYCorner)
         }
         bufferView.layer.cornerRadius = 10
         bufferView.backgroundColor = .systemGroupedBackground
@@ -73,24 +79,6 @@ extension SearchResultViewController: UITableViewDataSource {
         label.textAlignment = .center
         label.textColor = .secondaryLabel
         return header
-    }
-
-    private func setupHeaderSubView(superView: UIView, subView: UIView, verticalOffset: CGFloat? = nil, horizontalOffset: CGFloat? = nil) -> UIView {
-        superView.addSubview(subView)
-        subView.translatesAutoresizingMaskIntoConstraints = false
-        if let verticalOffset = verticalOffset {
-            subView.topAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.topAnchor, constant: verticalOffset).isActive = true
-            subView.bottomAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.bottomAnchor, constant: -verticalOffset).isActive = true
-        } else {
-            subView.centerYAnchor.constraint(equalTo: superView.centerYAnchor).isActive = true
-        }
-        if let horizontalOffset = horizontalOffset {
-            subView.leadingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.leadingAnchor, constant: horizontalOffset).isActive = true
-            subView.trailingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.trailingAnchor, constant: -horizontalOffset).isActive = true
-        } else {
-            subView.centerXAnchor.constraint(equalTo: superView.centerXAnchor).isActive = true
-        }
-        return subView
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -107,6 +95,27 @@ extension SearchResultViewController: UITableViewDataSource {
             cell.label.text = "\(item.chapterOffset + 1): \(item.row + 1) \n\(item.verse)"
         }
         return cell
+    }
+}
+
+// MARK: - Support
+extension SearchResultViewController {
+    private func setupHeaderSubView(superView: UIView, subView: UIView, verticalOffset: CGFloat? = nil, horizontalOffset: CGFloat? = nil) -> UIView {
+        superView.addSubview(subView)
+        subView.translatesAutoresizingMaskIntoConstraints = false
+        if let verticalOffset = verticalOffset {
+            subView.topAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.topAnchor, constant: verticalOffset).isActive = true
+            subView.bottomAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.bottomAnchor, constant: -verticalOffset).isActive = true
+        } else {
+            subView.centerYAnchor.constraint(equalTo: superView.centerYAnchor).isActive = true
+        }
+        if let horizontalOffset = horizontalOffset {
+            subView.leadingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.leadingAnchor, constant: horizontalOffset).isActive = true
+            subView.trailingAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.trailingAnchor, constant: -horizontalOffset).isActive = true
+        } else {
+            subView.centerXAnchor.constraint(equalTo: superView.centerXAnchor).isActive = true
+        }
+        return subView
     }
 }
 

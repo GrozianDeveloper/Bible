@@ -19,9 +19,6 @@ extension BookmarkDetailViewController: UICollectionViewDelegateFlowLayout {
         let deleteReference = UIAction(title: "Delete reference", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
             if let verse = self?.totalVerses.remove(at: indexPath.row) {
                 self?.versesToActiveBook.remove(verse)
-                if self?.bibleManager.verseReferenceForActiveBookmark.contains(verse) == false {
-                    
-                }
                 collectionView.deleteItems(at: [indexPath])
             }
         }

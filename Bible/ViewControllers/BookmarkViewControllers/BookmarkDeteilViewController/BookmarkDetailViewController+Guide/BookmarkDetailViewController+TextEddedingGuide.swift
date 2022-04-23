@@ -48,8 +48,14 @@ extension BookmarkDetailViewController {
         let height = resolution.height
         return Double(height / width)
     }
+}
 
-    
+// MARK: - Updates
+extension BookmarkDetailViewController {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        videoPlayer?.layer.borderColor = UIColor.label.cgColor
+    }
+
     @objc private func didTapOnTextView(_ sender: UITapGestureRecognizer? = nil) {
         removePlayerView()
     }
@@ -72,9 +78,6 @@ extension BookmarkDetailViewController {
         } else {
             removeVideoPlayer(true)
         }
-    }
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        videoPlayer?.layer.borderColor = UIColor.label.cgColor
     }
 }
 

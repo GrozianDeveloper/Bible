@@ -54,7 +54,3 @@ extension CompareVersionsViewController {
         }
     }
 }
-
-// MARK: - Handy Methods
-extension CompareVersionsViewController {
-}

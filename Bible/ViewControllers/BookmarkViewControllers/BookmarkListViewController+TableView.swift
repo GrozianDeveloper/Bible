@@ -7,7 +7,7 @@
 
 import UIKit
 
-// MARK: Delegate
+// MARK: - Delegate
 extension BookmarkListViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEditing {
@@ -57,7 +57,7 @@ extension BookmarkListViewController {
     }
 }
 
-// MARK: Data Source
+// MARK: - Data Source
 extension BookmarkListViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return bookmarks.count

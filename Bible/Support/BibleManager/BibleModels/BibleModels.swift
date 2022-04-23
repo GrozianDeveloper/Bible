@@ -60,13 +60,6 @@ enum BibleVersion: String, CaseIterable {
     case kingJamesVersion = "en"
     /// Russian
     case Synodal = "ru"
-    
-//    var name: String {
-//        switch self {
-//        case .kingJamesVersion: return "English"
-//        case .Synodal: return "Russian"
-//        }
-//    }
 
     var title: String {
         switch self {

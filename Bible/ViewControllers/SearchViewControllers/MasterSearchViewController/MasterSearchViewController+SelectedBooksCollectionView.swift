@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - Main
 extension MasterSearchViewController {
     func setupSelectedBooksCollectionView() {
         let searchController = navigationItem.searchController!

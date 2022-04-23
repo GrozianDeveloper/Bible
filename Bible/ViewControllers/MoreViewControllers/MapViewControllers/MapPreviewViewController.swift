@@ -21,33 +21,18 @@ final class MapPreviewViewController: UITableViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+}
+
+// MARK: - Life Cycle
+extension MapPreviewViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-//        getAdditionalInfo()
         getMapInfo()
         tabBarController?.tabBar.backgroundColor = .systemBackground
         tableView.register(MapTableViewCell.nib, forCellReuseIdentifier: MapTableViewCell.identifier)
         tableView.register(TextTableViewCell.nib, forCellReuseIdentifier: TextTableViewCell.identifier)
         tableView.register(InteractiveTextTableViewCell.nib, forCellReuseIdentifier: InteractiveTextTableViewCell.identifier)
         tableView.sectionFooterHeight = 0
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch sections[indexPath.section] {
-        case .originalMapSite:
-            return 50
-        default:
-            return UITableView.automaticDimension
-        }
-    }
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch sections[section] {
-        case .originalMapSite, .additionalInfo:
-            return 5
-        default:
-            return 0
-        }
     }
 }
 
@@ -62,6 +47,24 @@ extension MapPreviewViewController {
             present(vc, animated: true)
         default:
             break
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch sections[indexPath.section] {
+        case .originalMapSite:
+            return 50
+        default:
+            return UITableView.automaticDimension
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch sections[section] {
+        case .originalMapSite, .additionalInfo:
+            return 5
+        default:
+            return 0
         }
     }
 }
@@ -101,58 +104,12 @@ extension MapPreviewViewController {
             cell = tableView.dequeueReusableCell(withIdentifier: InteractiveTextTableViewCell.identifier, for: indexPath)
             if let cell = cell as? InteractiveTextTableViewCell {
                 cell.label.attributedText = mapInformation?[indexPath.row]
-                cell.label.urlDidTap = mapURLDidTap(_:)
+                cell.label.urlDidTap = additionalInformationDidTap(_:)
             }
             cell.selectionStyle = .none
             cell.separatorInset = .zero
         }
         return cell
-    }
-    
-    private func mapURLDidTap(_ url: URL) {
-        let separeted = url.absoluteString.components(separatedBy: "/")
-        guard var abbrev = separeted.first, separeted.indices.contains(1) else  {
-             return
-        }
-        if abbrev.contains("+") {
-            abbrev = abbrev.replacingOccurrences(of: "+", with: " ")
-        }
-        let book = BibleManager.shared.bible.first(where: { $0.abbrev.localized() == abbrev })!
-        let chapter = Int(separeted[1])! - 1
-        var verses = [Int]()
-        if separeted.indices.contains(2) {
-            let versesText = separeted[2]
-            let separatedVersesText = versesText.components(separatedBy: "-")
-            if var verse = Int(separatedVersesText[0]) {
-                verse -= 1
-                verses.append(verse)
-            }
-            if separatedVersesText.indices.contains(1) {
-                if var verse = Int(separatedVersesText[1]) {
-                    verse -= 1
-                    verses.append(verse)
-                }
-            }
-        }
-        var message = "Do you want to go to \(book.name) \(chapter + 1)"
-        if let verse = verses.first {
-            message.append(":\(verse + 1)")
-            if verses.indices.contains(1) {
-                message.append("-\(verses[1] + 1)")
-            }
-        }
-        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        let goAction = UIAlertAction(title: "Go", style: .default) { _ in
-            if verses.isEmpty {
-                let chapterRows = book.chapters[chapter]
-                verses = Array(0...chapterRows.count - 1)
-            }
-            BibleManager.shared.openViewController(self, target: .bibleWithBook(book: book, chapter: chapter, rows: verses))
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        alertController.addAction(goAction)
-        alertController.addAction(cancelAction)
-        present(alertController, animated: true)
     }
 }
 
@@ -263,6 +220,7 @@ extension MapPreviewViewController {
         let endIndex = convertIntToIndex(range.upperBound, in: string)
         return startIndex..<endIndex
     }
+
     private func convertIntToIndex(_ location: Int, in string: String) -> String.Index {
         return string.index(string.startIndex, offsetBy: location)
     }
@@ -282,6 +240,55 @@ extension MapPreviewViewController {
         let attribute: [NSAttributedString.Key: Any] = [.link: link as Any]
         return attribute
     }
+}
+
+// MARK: - Support
+extension MapPreviewViewController {
+    private func additionalInformationDidTap(_ url: URL) {
+        let separeted = url.absoluteString.components(separatedBy: "/")
+        guard var abbrev = separeted.first, separeted.indices.contains(1) else  {
+             return
+        }
+        if abbrev.contains("+") {
+            abbrev = abbrev.replacingOccurrences(of: "+", with: " ")
+        }
+        let book = BibleManager.shared.bible.first(where: { $0.abbrev.localized() == abbrev })!
+        let chapter = Int(separeted[1])! - 1
+        var verses = [Int]()
+        if separeted.indices.contains(2) {
+            let versesText = separeted[2]
+            let separatedVersesText = versesText.components(separatedBy: "-")
+            if var verse = Int(separatedVersesText[0]) {
+                verse -= 1
+                verses.append(verse)
+            }
+            if separatedVersesText.indices.contains(1) {
+                if var verse = Int(separatedVersesText[1]) {
+                    verse -= 1
+                    verses.append(verse)
+                }
+            }
+        }
+        var message = "Do you want to go to \(book.name) \(chapter + 1)"
+        if let verse = verses.first {
+            message.append(":\(verse + 1)")
+            if verses.indices.contains(1) {
+                message.append("-\(verses[1] + 1)")
+            }
+        }
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let goAction = UIAlertAction(title: "Go", style: .default) { _ in
+            if verses.isEmpty {
+                let chapterRows = book.chapters[chapter]
+                verses = Array(0...chapterRows.count - 1)
+            }
+            BibleManager.shared.openViewController(self, target: .bibleWithBook(book: book, chapter: chapter, rows: verses))
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alertController.addAction(goAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true)
+    }
 
     enum Section: CaseIterable {
         case map
@@ -290,6 +297,7 @@ extension MapPreviewViewController {
     }
 }
 
+// MARK: - String Extension
 fileprivate extension String {
     func indicesOf(string: String) -> [Int] {
         var indices = [Int]()

@@ -13,7 +13,9 @@ final class ToggleTableViewCell: UITableViewCell, Nibable {
     @IBOutlet weak var switchToggle: UISwitch!
     
     var cellIndex: IndexPath!
+
     var valueChanged: ((IndexPath, Bool) -> ())?
+
     @IBAction func SwitchValueChanged(_ sender: UISwitch) {
         valueChanged?(cellIndex, sender.isOn)
     }

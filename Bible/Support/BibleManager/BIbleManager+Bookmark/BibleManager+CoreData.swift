@@ -49,9 +49,9 @@ extension BibleManager {
     }
     
     // MARK: - Fetch
-    func fetchBookrmarks(_ fetchType: FetchBookmarksType = .all) -> [Bookmark] {
+    func fetchBookrmarks() -> [Bookmark] {
         do {
-            let bookrmarks = try context.fetch(fetchType.reqeust)
+            let bookrmarks = try context.fetch(Bookmark.fetchRequest())
             return bookrmarks
         }
         catch {

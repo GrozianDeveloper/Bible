@@ -28,11 +28,6 @@ final class VersionsCompareView: UIView {
 // MARK: Setup
 extension VersionsCompareView {
     private func initialSetupView() {
-//        stackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
-//        stackView.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
-//        stackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
-//        stackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
-
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.spacing = 20

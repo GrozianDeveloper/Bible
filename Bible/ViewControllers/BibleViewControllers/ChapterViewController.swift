@@ -137,7 +137,7 @@ extension ChapterViewController {
         if let cell = cell as? TextTableViewCell {
             let row = indexPath.row
             let text = "\(row + 1). \(chapterText[row])"
-            let standardFont = BibleManager.shared.font
+            let standardFont = bibleManager.font
             if bookmarkRelatedRows.contains(indexPath.row), bibleManager.colorizeReferencedverses {
                 cell.label.font = .boldSystemFont(ofSize: standardFont.pointSize)
             } else {

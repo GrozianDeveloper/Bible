@@ -11,7 +11,7 @@ extension BookmarkListViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(BookmarkTableViewCell.nib, forCellReuseIdentifier: BookmarkTableViewCell.identifier)
-        setupNotificationAcceptence()
+        subscribeForNotification(#selector(bookmarksDidChange), name: BibleManager.bookmarksDidChangeNotification)
         bookmarksDidChange()
         tableView.allowsMultipleSelectionDuringEditing = true
         navigationItem.title = "Bookmarks"
@@ -21,7 +21,7 @@ extension BookmarkListViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        openBookmark()
+        checkIsNeedToOpenBookmark()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -37,7 +37,7 @@ extension BookmarkListViewController {
 }
 
 extension BookmarkListViewController {
-    @objc private func openBookmark() {
+    @objc private func checkIsNeedToOpenBookmark() {
         guard let identifier = bibleManager.bookmarkToOpen else { return }
         if let offset = bookmarks.enumerated().first(where: { $0.element.id == identifier })?.offset {
             bibleManager.bookmarkToOpen = nil
@@ -45,10 +45,6 @@ extension BookmarkListViewController {
             tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
             tableView(tableView, didSelectRowAt: indexPath)
         }
-    }
-
-    private func setupNotificationAcceptence() {
-        subscribeForNotification(#selector(bookmarksDidChange), name: BibleManager.bookmarksDidChangeNotification)
     }
     
     @objc private func bookmarksDidChange() {
@@ -65,6 +61,7 @@ extension BookmarkListViewController {
         }
     }
 }
+
 // MARK: Editing Bookmarks list
 extension BookmarkListViewController {
     private func handleSelectToRemoveBookmarks(_ action: UIAction) {
@@ -86,7 +83,24 @@ extension BookmarkListViewController {
         let barButton = UIBarButtonItem(title: "Done", image: nil, primaryAction: removeSelected, menu: nil)
         self.navigationItem.setRightBarButton(barButton, animated: true)
     }
+}
 
+// MARK: - Setup
+extension BookmarkListViewController {
+    private func setupCreateEmptyBookmarkBarButton() {
+        let createEmpyBookmark = UIAction { [weak self] _ in
+            guard let self = self else { return }
+            let bookmark = self.bibleManager.createBookmark(title: "Empy Bookmark")
+            if let row = self.bookmarks.enumerated().first(where: { $0.element.id == bookmark.id })?.offset {
+                let indexPath: IndexPath = [0, row]
+                self.tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+                self.tableView(self.tableView, didSelectRowAt: indexPath)
+            }
+        }
+        let barButton = UIBarButtonItem(image: UIImage(systemName: "plus"), primaryAction: createEmpyBookmark)
+        navigationItem.setLeftBarButton(barButton, animated: true)
+    }
+    
     private func handleRemoveAllBookmarks(_ action: UIAction) {
         bibleManager.bookmarks.enumerated().forEach {
             bibleManager.deleteBookmark(bookmark: $0.element, updateReferencesToActiveBook: false)
@@ -103,19 +117,5 @@ extension BookmarkListViewController {
         let removeAllMenu = UIMenu(children: [removeAll])
         let barButton = UIBarButtonItem(title: "Edit", image: nil, primaryAction: selectToRemoveBookmark, menu: removeAllMenu)
         navigationItem.setRightBarButton(barButton, animated: true)
-    }
-    
-    private func setupCreateEmptyBookmarkBarButton() {
-        let createEmpyBookmark = UIAction { [weak self] _ in
-            guard let self = self else { return }
-            let bookmark = self.bibleManager.createBookmark(title: "Empy Bookmark")
-            if let row = self.bookmarks.enumerated().first(where: { $0.element.id == bookmark.id })?.offset {
-                let indexPath: IndexPath = [0, row]
-                self.tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
-                self.tableView(self.tableView, didSelectRowAt: indexPath)
-            }
-        }
-        let barButton = UIBarButtonItem(image: UIImage(systemName: "plus"), primaryAction: createEmpyBookmark)
-        navigationItem.setLeftBarButton(barButton, animated: true)
     }
 }

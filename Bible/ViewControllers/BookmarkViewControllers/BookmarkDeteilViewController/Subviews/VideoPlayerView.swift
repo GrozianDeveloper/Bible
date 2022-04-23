@@ -9,7 +9,6 @@ import UIKit
 import AVKit.AVPlayerViewController
 
 final class VideoPlayerView: UIView {
-
     var player: AVPlayer? {
         get {
             return playerLayer.player

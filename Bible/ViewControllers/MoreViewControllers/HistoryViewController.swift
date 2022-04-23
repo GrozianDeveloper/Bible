@@ -22,8 +22,9 @@ final class HistoryViewController: UITableViewController {
 extension HistoryViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
-        setupNotifications()
+        tableView.register(TextTableViewCell.nib, forCellReuseIdentifier: TextTableViewCell.identifier)
+        tableView.separatorStyle = .none
+        subscribeForNotification(#selector(historyDidChange), name: BibleManager.historyDidChangeNotification)
     }
 }
 
@@ -64,18 +65,6 @@ extension HistoryViewController {
         mainLabel?.textAlignment = .center
         mainLabel?.font = .systemFont(ofSize: 20)
         return cell
-    }
-}
-
-// MARK: Setup
-private extension HistoryViewController  {
-    private func setupTableView() {
-        tableView.register(TextTableViewCell.nib, forCellReuseIdentifier: TextTableViewCell.identifier)
-        tableView.separatorStyle = .none
-    }
-    
-    private func setupNotifications() {
-        subscribeForNotification(#selector(historyDidChange), name: BibleManager.historyDidChangeNotification)
     }
 }
 
