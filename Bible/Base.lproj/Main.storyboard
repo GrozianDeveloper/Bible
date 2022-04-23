@@ -301,20 +301,20 @@
                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="HistoryCell" id="BXu-At-tcp">
-                                <rect key="frame" x="20" y="49.5" width="374" height="21"/>
+                                <rect key="frame" x="20" y="49.5" width="374" height="21.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="BXu-At-tcp" id="vVP-k8-ViY">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="21"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="21.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ewP-qP-wqf">
-                                            <rect key="frame" x="10" y="0.0" width="364" height="21"/>
+                                            <rect key="frame" x="10" y="0.0" width="364" height="21.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y6E-Ik-LCb">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="21"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="21.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -375,53 +375,52 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="X1F-GD-rU1">
-                                <rect key="frame" x="221.5" y="88" width="192.5" height="725"/>
+                                <rect key="frame" x="215" y="88" width="199" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                             </tableView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="XAf-OR-8ZZ">
-                                <rect key="frame" x="0.0" y="88" width="192.5" height="725"/>
+                                <rect key="frame" x="0.0" y="88" width="199" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                             </tableView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Bf-NU-lWB">
-                                <rect key="frame" x="195.5" y="440.5" width="23" height="20.5"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VersionsSeparator" translatesAutoresizingMaskIntoConstraints="NO" id="tlc-CM-liN">
+                                <rect key="frame" x="202" y="435.5" width="10" height="30"/>
+                                <color key="tintColor" systemColor="linkColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="5" id="FYx-Gn-Eji"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="Pbj-EY-0DW"/>
+                                    <constraint firstAttribute="height" constant="30" id="krn-yc-jBv"/>
                                 </constraints>
-                                <attributedString key="attributedText">
-                                    <fragment content="  ...">
-                                        <attributes>
-                                            <color key="NSColor" systemColor="linkColor"/>
-                                            <font key="NSFont" metaFont="system" size="17"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Wc0-nk-7hm"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="XAf-OR-8ZZ" firstAttribute="top" secondItem="Wc0-nk-7hm" secondAttribute="top" id="6dL-mr-OB8"/>
                             <constraint firstItem="X1F-GD-rU1" firstAttribute="trailing" secondItem="Wc0-nk-7hm" secondAttribute="trailing" id="9yX-yg-vFX"/>
-                            <constraint firstItem="X1F-GD-rU1" firstAttribute="leading" secondItem="5Bf-NU-lWB" secondAttribute="trailing" constant="3" id="OUZ-c8-FsA"/>
+                            <constraint firstItem="tlc-CM-liN" firstAttribute="centerY" secondItem="Wc0-nk-7hm" secondAttribute="centerY" id="JWI-oa-HyY"/>
+                            <constraint firstItem="tlc-CM-liN" firstAttribute="centerX" secondItem="Wc0-nk-7hm" secondAttribute="centerX" id="LJa-b3-J9Q"/>
+                            <constraint firstItem="X1F-GD-rU1" firstAttribute="leading" secondItem="tlc-CM-liN" secondAttribute="trailing" constant="3" id="R7W-hC-u4g"/>
                             <constraint firstItem="Wc0-nk-7hm" firstAttribute="bottom" secondItem="XAf-OR-8ZZ" secondAttribute="bottom" id="SBm-Qn-0xi"/>
-                            <constraint firstItem="5Bf-NU-lWB" firstAttribute="centerX" secondItem="Wc0-nk-7hm" secondAttribute="centerX" id="Uak-zo-Ana"/>
-                            <constraint firstItem="5Bf-NU-lWB" firstAttribute="leading" secondItem="XAf-OR-8ZZ" secondAttribute="trailing" constant="3" id="WAL-Qx-e9B"/>
                             <constraint firstItem="X1F-GD-rU1" firstAttribute="top" secondItem="Wc0-nk-7hm" secondAttribute="top" id="bFP-gc-xcr"/>
+                            <constraint firstItem="tlc-CM-liN" firstAttribute="leading" secondItem="XAf-OR-8ZZ" secondAttribute="trailing" constant="3" id="fr3-sH-fwp"/>
                             <constraint firstItem="XAf-OR-8ZZ" firstAttribute="leading" secondItem="Wc0-nk-7hm" secondAttribute="leading" id="gEG-8b-JyJ"/>
-                            <constraint firstItem="5Bf-NU-lWB" firstAttribute="centerY" secondItem="Wc0-nk-7hm" secondAttribute="centerY" id="hvy-dL-9RZ"/>
                             <constraint firstItem="Wc0-nk-7hm" firstAttribute="bottom" secondItem="X1F-GD-rU1" secondAttribute="bottom" id="pq1-zc-RYp"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="Kzn-7p-kB9"/>
+                    <navigationItem key="navigationItem" id="Kzn-7p-kB9">
+                        <barButtonItem key="rightBarButtonItem" image="arrow.up.and.down" catalog="system" id="z5o-d9-MPN">
+                            <color key="tintColor" systemColor="labelColor"/>
+                            <connections>
+                                <action selector="toggleCenteringVerses:" destination="gJC-ek-vbb" id="H8Z-Wp-I0t"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="leftTableView" destination="XAf-OR-8ZZ" id="hKx-gZ-Nab"/>
                         <outlet property="rightTableView" destination="X1F-GD-rU1" id="xa5-5n-lT4"/>
-                        <outlet property="separator" destination="5Bf-NU-lWB" id="cMr-ui-Weg"/>
-                        <outlet property="separatorCenterXConstaint" destination="Uak-zo-Ana" id="gka-mh-RRY"/>
+                        <outlet property="separator" destination="tlc-CM-liN" id="2DT-xZ-wT0"/>
+                        <outlet property="separatorCenterXConstaint" destination="LJa-b3-J9Q" id="zZS-dB-9vE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JNv-vT-Ktl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -471,20 +470,20 @@
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelToggleCell" id="FJK-m2-Xsh">
-                                <rect key="frame" x="20" y="92.5" width="374" height="43"/>
+                                <rect key="frame" x="20" y="92.5" width="374" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="FJK-m2-Xsh" id="q2c-9Z-c2f">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xUd-S9-mvN">
-                                            <rect key="frame" x="30" y="11" width="42" height="21"/>
+                                            <rect key="frame" x="30" y="11" width="42" height="21.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <switch opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UV6-It-10f">
-                                            <rect key="frame" x="295" y="6" width="51" height="31"/>
+                                            <rect key="frame" x="295" y="6.5" width="51" height="31"/>
                                         </switch>
                                     </subviews>
                                     <constraints>
@@ -532,7 +531,9 @@
     </scenes>
     <color key="tintColor" systemColor="labelColor"/>
     <resources>
+        <image name="VersionsSeparator" width="5" height="19"/>
         <image name="arrow.left.arrow.right.circle" catalog="system" width="128" height="121"/>
+        <image name="arrow.up.and.down" catalog="system" width="100" height="128"/>
         <image name="bible" width="25" height="30"/>
         <image name="clock" catalog="system" width="128" height="121"/>
         <image name="gear.circle" catalog="system" width="128" height="121"/>

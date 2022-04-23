@@ -20,13 +20,13 @@ final class BibleViewController: UIViewController {
     var activeChapterOffset: Int = BibleManager.shared.getLastOpenedChapterOffset() {
         didSet {
             checkActiveChapterOffset()
-            addChapterToReadedItems(offset: activeChapterOffset)
+            addChapterToReadedHistory(offset: activeChapterOffset)
             updateNavigationItem()
         }
     }
 
-    private(set) var readedHistoryItems = [BibleHistoryItem]()
-    
+    var readedHistoryItems = [BibleHistoryItem]()
+
     var currentBookIndex = 0
     var nextBook: Book?
     var previousBook: Book?
@@ -43,7 +43,7 @@ private extension BibleViewController {
         }
     }
     
-    private func addChapterToReadedItems(offset: Int) {
+    private func addChapterToReadedHistory(offset: Int) {
         guard let abbrev = bibleManager.activeBook?.abbrev else { return }
         readedHistoryItems.append(BibleHistoryItem(abbrev: abbrev, chapterOffset: offset))
     }
@@ -74,9 +74,9 @@ private extension BibleViewController {
     private func updateLeftOrRightNavigationItem(isLeft: Bool) {
         guard let item = isLeft ? navigationItem.leftBarButtonItem : navigationItem.rightBarButtonItem else { return }
         let checkChapterOffset = isLeft ? activeChapterOffset == 0 : activeChapterOffset == pages.endIndex - 1
-        let directionString = isLeft ? "left" : "right"
+        let direction = isLeft ? "left" : "right"
         if checkChapterOffset {
-            let imageName = "arrow.turn.up.\(directionString)"
+            let imageName = "arrow.turn.up.\(direction)"
             item.image = UIImage(systemName: imageName)
             let checkBookIndex = isLeft ? currentBookIndex == 0 : currentBookIndex == bibleManager.bible.endIndex - 1
             if checkBookIndex {
@@ -85,7 +85,7 @@ private extension BibleViewController {
                 item.tintColor = .label
             }
         } else {
-            let standartImage = UIImage(systemName: "chevron.\(directionString)")
+            let standartImage = UIImage(systemName: "chevron.\(direction)")
             if item.image != standartImage {
                 item.image = standartImage
             }

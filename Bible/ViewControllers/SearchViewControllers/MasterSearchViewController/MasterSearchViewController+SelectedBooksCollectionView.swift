@@ -91,8 +91,6 @@ extension MasterSearchViewController: UICollectionViewDataSource {
                 if names.contains(name.element) {
                     let indexPath = IndexPath(row: name.offset, section: section.offset)
                     indexes.insert(indexPath)
-                    let cell = bookSelectorView?.tableView.cellForRow(at: indexPath)
-                    print(cell)
                     bookSelectorView?.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
                 }
             }

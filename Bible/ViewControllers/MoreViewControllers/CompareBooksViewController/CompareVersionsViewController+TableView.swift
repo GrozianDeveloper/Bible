@@ -19,10 +19,23 @@ extension CompareVersionsViewController {
        rightTableView.dataSource = self
    }
 }
+
+// MARK: - UITableViewDelegate
 extension CompareVersionsViewController: UITableViewDelegate {
-    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        isDragingLeftTableView = isLeftTableView(scrollView as! UITableView)
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        centerOppositeTableViewVisibleCells(scrollView)
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        centerOppositeTableViewVisibleCells(scrollView)
+    }
 }
 
+// MARK: - UITableViewDataSource
 extension CompareVersionsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return isLeftTableView(tableView) ? leftChapter.count : rightChapter.count
@@ -36,8 +49,35 @@ extension CompareVersionsViewController: UITableViewDataSource {
         }
         return cell
     }
-    
-    
+}
+
+// MARK: Centering Feature
+extension CompareVersionsViewController {
+    func centerOppositeTableViewVisibleCells(_ scrollView: UIScrollView) {
+        guard verseCenteredOnScroll else { return }
+        let tableView = scrollView as! UITableView
+        let isCurrentTableViewLeft = isLeftTableView(tableView)
+        guard isDragingLeftTableView == isCurrentTableViewLeft,
+                !isDragingSeparator,
+                let visibleCellsIndexs = tableView.indexPathsForVisibleRows, !visibleCellsIndexs.isEmpty else {
+            return
+        }
+        let oppositeTable: UITableView
+        let oppositeDataSource: [String]
+        if isDragingLeftTableView {
+            oppositeTable = rightTableView
+            oppositeDataSource = rightChapter
+        } else {
+            oppositeTable = leftTableView
+            oppositeDataSource = leftChapter
+        }
+        let scrollIndex = visibleCellsIndexs.prefix(2).first(where: {
+            return tableView.rectForRow(at: $0).origin.y >= tableView.contentOffset.y
+        })
+        if let indexPath = scrollIndex, oppositeDataSource.indices.contains(indexPath.row) {
+            oppositeTable.scrollToRow(at: indexPath, at: .top, animated: true)
+        }
+    }
 }
 
 // MARK: - Support

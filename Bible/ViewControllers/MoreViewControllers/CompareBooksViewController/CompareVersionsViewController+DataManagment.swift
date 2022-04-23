@@ -22,6 +22,8 @@ extension CompareVersionsViewController {
                 let previousLeft = self.leftVersion
                 self.leftVersion = item
                 self.rightVersion = previousLeft
+                let abbrev = self.leftBook?.abbrev ?? self.rightBook?.abbrev
+                self.updateBookForVersion(isLeft: !isLeft, abbrev: abbrev)
             }
             let abbrev = self.leftBook?.abbrev ?? self.rightBook?.abbrev
             self.updateBookForVersion(isLeft: isLeft, abbrev: abbrev)
@@ -35,18 +37,19 @@ extension CompareVersionsViewController {
         self.present(navigationController, animated: true)
     }
     
-    func updateBookForVersion(isLeft: Bool, abbrev: String?, completion: (() -> ())? = nil) {
+    func updateBookForVersion(isLeft: Bool, abbrev: String?, completion: ((Book) -> ())? = nil) {
         guard let version = isLeft ? leftVersion : rightVersion else { return }
         let abbrev = abbrev ?? bibleManager.activeBook?.abbrev ?? "gn"
         bibleManager.getBible(version: version) { [weak self] bible in
+            guard let self = self else { return }
             if isLeft {
-                self?.leftBible = bible
-                self?.leftBook = bible.first(where: { $0.abbrev == abbrev })
-                completion?()
+                self.leftBible = bible
+                self.leftBook = bible.first(where: { $0.abbrev == abbrev })
+                completion?(self.leftBook!)
             } else {
-                self?.rightBible = bible
-                self?.rightBook = bible.first(where: { $0.abbrev == abbrev })
-                completion?()
+                self.rightBible = bible
+                self.rightBook = bible.first(where: { $0.abbrev == abbrev })
+                completion?(self.rightBook!)
             }
         }
     }

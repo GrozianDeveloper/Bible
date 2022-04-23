@@ -29,8 +29,8 @@ extension BibleManager {
 
 extension BibleManager {
     enum TargerViewController {
-        case bibleWithAbbrev(abbrev: String, chapter: Int, rows: [Int]?)
-        case bibleWithBook(book: Book, chapter: Int, rows: [Int]?)
+        case bibleWithAbbrev(abbrev: String, chapter: Int?, rows: [Int]?)
+        case bibleWithBook(book: Book, chapter: Int?, rows: [Int]?)
         case bookmark(id: ObjectIdentifier)
     }
 }

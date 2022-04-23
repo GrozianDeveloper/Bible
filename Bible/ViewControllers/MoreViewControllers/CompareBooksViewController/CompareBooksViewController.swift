@@ -8,45 +8,30 @@
 import UIKit
 
 final class CompareVersionsViewController: UIViewController {
-    @IBOutlet weak var separatorCenterXConstaint: NSLayoutConstraint!
-
-    var isDragingSeparator = false
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            let currentTouch = touch.location(in: view)
-            separator.frame.contains(currentTouch)
+    var verseCenteredOnScroll = true
+    @IBAction func toggleCenteringVerses(_ sender: UIBarButtonItem) {
+        verseCenteredOnScroll.toggle()
+        let centered = verseCenteredOnScroll
+        UIView.animate(withDuration: 0.2) {
+            sender.tintColor = centered ? .label : .secondaryLabel
         }
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            let currentTouch = touch.location(in: view).x
-            let previousTouch = touch.previousLocation(in: view).x
-            let shifting = currentTouch - previousTouch
-            let maximumOffset = (view.frame.width / 2) / 2
-            let newOffset = separatorCenterXConstaint.constant + shifting
-            if abs(newOffset) < maximumOffset {
-                separatorCenterXConstaint.constant = newOffset
-            } else {
-                let isOnLeftSide = (newOffset - maximumOffset) < .zero
-                separatorCenterXConstaint.constant = isOnLeftSide ? -maximumOffset : maximumOffset
-            }
-        }
-    }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        isDragingSeparator = false
-    }
+    @IBOutlet private(set) weak var leftTableView: UITableView!
+    @IBOutlet private(set) weak var rightTableView: UITableView!
+    let compareView = VersionsCompareView()
     
-//    @IBOutlet weak var separator: UIImageView!
-    
-    @IBOutlet weak var separator: UILabel!
-    let bibleManager = BibleManager.shared
-
-    var currentChapter: Int = 0
+    @IBOutlet private weak var separator: UIImageView!
+    @IBOutlet private weak var separatorCenterXConstaint: NSLayoutConstraint!
+    private(set) var isDragingSeparator = false
+    var isDragingLeftTableView = true
 
     let userDefault = UserDefaults.standard
+    let bibleManager = BibleManager.shared
+
+    var chapterOffset: Int = 0
+
     var leftVersion: BibleVersion! {
         didSet {
             let name = shortNameForVersion(leftVersion)
@@ -58,15 +43,7 @@ final class CompareVersionsViewController: UIViewController {
     var leftBible: [Book]!
     var leftBook: Book! {
         didSet {
-            if !leftBook.chapters.indices.contains(currentChapter) {
-                currentChapter = 0
-            }
-            leftChapter = leftBook.chapters[currentChapter].enumerated().map {
-                return "\($0.offset + 1). \($0.element) "
-            }
-            garanteeMainThread { [weak self] in
-                self?.leftTableView.reloadData()
-            }
+            updateChapter(isLeft: true)
         }
     }
     private(set) var leftChapter: [String] = []
@@ -82,33 +59,62 @@ final class CompareVersionsViewController: UIViewController {
     var rightBible: [Book]!
     var rightBook: Book! {
         didSet {
-            if !rightBook.chapters.indices.contains(currentChapter) {
-                currentChapter = 0
-            }
-            rightChapter = rightBook.chapters[currentChapter].enumerated().map {
-                return "\($0.offset + 1). \($0.element) "
-            }
-            garanteeMainThread { [weak self] in
-                self?.rightTableView.reloadData()
-            }
+            updateChapter(isLeft: false)
         }
     }
     private(set) var rightChapter: [String] = []
-
-    @IBOutlet private(set) weak var leftTableView: UITableView!
-    @IBOutlet private(set) weak var rightTableView: UITableView!
-    
-    let compareView = VersionsCompareView()
+    var presentedBibleNavigator: BibleNavigatorViewController? = nil
 }
 
+// MARK: - Separator
 extension CompareVersionsViewController {
-    struct CVCUserDefaultKeys {
-        static let previousLeftVersionKey = "PreviousLeftVersion"
-        static let previousRightVersionKey = "PreviousRightVersion"
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            let currentTouch = touch.location(in: view)
+            separator.frame.contains(currentTouch)
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            let currentTouch = touch.location(in: view).x
+            let previousTouch = touch.previousLocation(in: view).x
+            let shifting = currentTouch - previousTouch
+            let center = view.frame.width / 2
+            let maximumOffset = (center) / 2
+            let newOffset = separatorCenterXConstaint.constant + shifting
+            if abs(newOffset) < maximumOffset {
+                separatorCenterXConstaint.constant = newOffset
+            } else {
+                let isOnLeftSide = (newOffset - maximumOffset) < .zero
+                separatorCenterXConstaint.constant = isOnLeftSide ? -maximumOffset : maximumOffset
+            }
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        isDragingSeparator = false
+        isDragingLeftTableView = leftTableView.frame.width > rightTableView.frame.width
+        let tableView = isDragingLeftTableView ? leftTableView : rightTableView
+        centerOppositeTableViewVisibleCells(tableView!)
     }
 }
 
+// MARK: Support
 extension CompareVersionsViewController {
+    private func updateChapter(isLeft: Bool) {
+        let book = isLeft ? leftBook : rightBook
+        if !book!.chapters.indices.contains(chapterOffset) {
+            chapterOffset = 0
+        }
+        let chapters = book!.chapters[chapterOffset].enumerated().map {
+            return "\($0.offset + 1). \($0.element)"
+        }
+        isLeft ? (leftChapter = chapters) : (rightChapter = chapters)
+        garanteeMainThread { [weak self] in
+            isLeft ? self?.leftTableView.reloadData() : self?.rightTableView.reloadData()
+        }
+    }
     private func shortNameForVersion(_ version: BibleVersion) -> String {
         switch version {
         case .kingJamesVersion:
@@ -117,4 +123,12 @@ extension CompareVersionsViewController {
             return " СНД "
         }
     }
+
+    struct CVCUserDefaultKeys {
+        static let previousLeftVersionKey = "comparePreviousLeftVersion"
+        static let previousRightVersionKey = "comparePreviousRightVersion"
+        static let previousOpenBook = "comparePreviousOpenBook"
+        static let previousOpenChapter = "comparePreviousOpenChapter"
+    }
 }
+

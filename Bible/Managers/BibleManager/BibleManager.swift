@@ -11,20 +11,24 @@ import simd
 import AVFoundation
 
 final class BibleManager: NSObject {
-    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let keyPath = keyPath {
+            if keyPath == SwitchableSettings.colorizeVerses.userDefaultKey {
+                colorizeReferencedverses = (change![.newKey]) as! Bool
+            }
+        }
+    }
     class func registerDefaults() {
         var defaults: [String: Any] = [
             UserDefaultsKeys.fontPointSize: 17
         ]
-        SwitchableSettings.allCases.forEach {
-            if let key = $0.userDefaultKey {
-                defaults[key] = true
-            }
-        }
+        let colorizeKey = SwitchableSettings.colorizeVerses.userDefaultKey!
+        defaults[colorizeKey] = true
         UserDefaults.standard.register(defaults: defaults)
     }
     
     var colorizeReferencedverses = UserDefaults.standard.bool(forKey: SwitchableSettings.colorizeVerses.userDefaultKey!)
+
     enum SwitchableSettings: CaseIterable {
         case colorizeVerses
         var title: String {
@@ -55,9 +59,8 @@ final class BibleManager: NSObject {
         let language = UserDefaults.standard.string(forKey: UserDefaultsKeys.language) ?? "en"
         bibleVersion = BibleVersion(rawValue: language) ?? .kingJamesVersion
         super.init()
-        if let key = BibleManager.SwitchableSettings.colorizeVerses.userDefaultKey {
-            UserDefaults.standard.addObserver(self, forKeyPath: key, options: [.new], context: nil)
-        }
+        let key = BibleManager.SwitchableSettings.colorizeVerses.userDefaultKey
+        UserDefaults.standard.addObserver(self, forKeyPath: key!, options: [.new], context: nil)
         setupLocalizationBundle()
         getCurrentBible()
         NotificationCenter.default.addObserver(self, selector: #selector(saveContext), name: UIApplication.willResignActiveNotification, object: nil)

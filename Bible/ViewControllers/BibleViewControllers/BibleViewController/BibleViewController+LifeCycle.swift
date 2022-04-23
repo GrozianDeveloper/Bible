@@ -25,6 +25,7 @@ extension BibleViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         bibleManager.addChaptersToHistory(items: readedHistoryItems)
+        readedHistoryItems.removeAll()
     }
 }
 
@@ -33,12 +34,14 @@ extension BibleViewController {
     private func setupBookPageController() {
         addChild(bookPageController)
         view.addSubview(bookPageController.view)
+        bookPageController.didMove(toParent: self)
+
         bookPageController.view.translatesAutoresizingMaskIntoConstraints = false
         bookPageController.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         bookPageController.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         bookPageController.view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         bookPageController.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        bookPageController.didMove(toParent: self)
+
         bookPageController.dataSource = self
         bookPageController.delegate = self
     }
@@ -47,17 +50,16 @@ extension BibleViewController {
 // MARK: - Scroll to chpater and verse
 extension BibleViewController {
     private func checkNeedToScroll() {
-//        print(pages.count, activeChapterOffset, bibleManager.chapterOffsetToOpen)
-        if let openChapter = bibleManager.chapterOffsetToOpen, !pages.isEmpty {
+        guard !pages.isEmpty else { return }
+        if let openChapter = bibleManager.chapterOffsetToOpen {
             if pages.indices.contains(openChapter) {
                 activeChapterOffset = openChapter
             } else {
                 activeChapterOffset = 0
             }
+            bibleManager.chapterOffsetToOpen = nil
             let activePage = pages[activeChapterOffset]
             bookPageController.setViewControllers([activePage], direction: .forward, animated: false)
-            print("nilled")
-            bibleManager.chapterOffsetToOpen = nil
         }
         if let rows = bibleManager.verseRowToScroll {
             let first = bookPageController.viewControllers?.first as? ChapterViewController

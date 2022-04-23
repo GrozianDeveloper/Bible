@@ -20,14 +20,20 @@ extension BibleViewController: UIPageViewControllerDelegate {
 // MARK: - UIPageViewControllerDataSource
 extension BibleViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let index = pages.firstIndex(of: viewController as! ChapterViewController), index > 0 else  { return nil }
-        let previous = pages[index - 1]
+        guard let chapterController = bookPageController.viewControllers?.first as? ChapterViewController,
+                chapterController.chapterOffset > 0 else {
+            return nil
+        }
+        let previous = pages[chapterController.chapterOffset - 1]
         return previous
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let index = pages.firstIndex(of: viewController as! ChapterViewController), index < pages.count - 1 else  { return nil }
-        let next = pages[index + 1]
+        guard let chapterController = bookPageController.viewControllers?.first as? ChapterViewController,
+                chapterController.chapterOffset < pages.count - 1 else  {
+            return nil
+        }
+        let next = pages[chapterController.chapterOffset + 1]
         return next
     }
 }

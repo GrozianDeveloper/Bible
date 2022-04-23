@@ -47,8 +47,9 @@ extension BibleViewController {
             bookPageController.setViewControllers([pages[activeChapterOffset]], direction: .forward, animated: false)
         } else if let book = previousBook {
             let chapter = book.chapters.count - 1
+            activeChapterOffset = chapter
             bibleManager.chapterOffsetToOpen = chapter
-            bibleManager.openViewController(self, target: .bibleWithBook(book: book, chapter: bibleManager.chapterOffsetToOpen!, rows: nil))
+            bibleManager.openViewController(self, target: .bibleWithBook(book: book, chapter: activeChapterOffset, rows: nil))
             previousBook = nil
         }
     }
@@ -58,8 +59,9 @@ extension BibleViewController {
             activeChapterOffset += 1
             bookPageController.setViewControllers([pages[activeChapterOffset]], direction: .forward, animated: false)
         } else if let book = nextBook {
-            bibleManager.chapterOffsetToOpen = 0
-            bibleManager.openViewController(self, target: .bibleWithBook(book: book, chapter: 0, rows: nil))
+            activeChapterOffset = 0
+            bibleManager.chapterOffsetToOpen = activeChapterOffset
+            bibleManager.openViewController(self, target: .bibleWithBook(book: book, chapter: bibleManager.chapterOffsetToOpen, rows: nil))
             nextBook = nil
         }
     }
