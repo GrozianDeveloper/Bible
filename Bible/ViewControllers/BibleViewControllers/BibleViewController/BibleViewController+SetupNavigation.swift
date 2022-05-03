@@ -14,6 +14,7 @@ extension BibleViewController {
         navigationItem.titleView = bibleNavigationView
         setupLeftBarItem()
         setupRightBarItem()
+        checkNavigationBarButton()
     }
     
     private func setupLeftBarItem() {
@@ -23,6 +24,11 @@ extension BibleViewController {
     private func setupRightBarItem() {
         let item = UIBarButtonItem(image: UIImage(systemName: "chevron.right"), style: .plain, target: self, action: #selector(rightBarItemDidTap))
         navigationItem.rightBarButtonItem = item
+    }
+    
+    private func checkNavigationBarButton() {
+        let offset = activeChapterOffset
+        activeChapterOffset = offset
     }
 }
 
